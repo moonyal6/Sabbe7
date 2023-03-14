@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "232581846144",
+    "project_id": "sabbeh-clone",
+    "storage_bucket": "sabbeh-clone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232581846144:android:2b90e58966187d4f22c265",
+        "android_client_info": {
+          "package_name": "com.example.sabbeh_clone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "232581846144-8idfvt4f74mf9re6rlqk4dq7ak9hslu5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzwoXpAGLlsi7q6BRA5bkxaN03EwWZt2Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "232581846144-8idfvt4f74mf9re6rlqk4dq7ak9hslu5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
