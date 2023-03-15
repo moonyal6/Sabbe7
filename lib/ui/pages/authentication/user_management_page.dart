@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/ui/components/card/page_button_card.dart';
-import '../../../shared/constants/text_constants/turkish_text_constants.dart';
-import '../../components/card/card_components/card_tile.dart';
-import '../../components/card/card_components/card_tile_components/card_tile_button.dart';
-import '../../components/card/page_card.dart';
-import '../../components/header/page_header.dart';
+import '../../components/app_pages_components/card/card_components/card_tile.dart';
+import '../../components/app_pages_components/card/page_button_card.dart';
+import '../../components/app_pages_components/card/page_card.dart';
+import '../../components/app_pages_components/header/page_header.dart';
 import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../../cubit/firebase_cubits/auth/auth_states.dart';
-import '../../providers/lang_provider.dart';
 
 
 

@@ -2,22 +2,37 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/ui/providers/lang_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../shared/constants/style_constants/text_style_constants.dart';
-import '../../shared/constants/text_constants/turkish_text_constants.dart';
-import '../cubit/firebase_cubits/auth/auth_cubit.dart';
-import '../cubit/firebase_cubits/auth/auth_states.dart';
-import '../pages/authentication/sign_in_screen.dart';
-import '../pages/authentication/user_management_screen.dart';
-import '../pages/debug_screen.dart';
-import '../pages/reports/global_report_screen.dart';
-import '../pages/reports/personal_report.dart';
-import '../pages/settings_page.dart';
+import '../../../shared/constants/constants.dart';
+import '../../../shared/constants/style_constants/text_style_constants.dart';
+import '../../../shared/constants/text_constants/turkish_text_constants.dart';
+import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
+import '../../cubit/firebase_cubits/auth/auth_states.dart';
+import '../../pages/authentication/sign_in_page.dart';
+import '../../pages/authentication/user_management_page.dart';
+import '../../pages/debug_screen.dart';
+import '../../pages/reports/global_report_screen.dart';
+import '../../pages/reports/personal_report.dart';
+import '../../pages/settings_page.dart';
 
 
 
 class CounterPageDrawer extends StatelessWidget {
+
+
+  Future<void> _launchStoreURL() async {
+    String _lang = appLang['@lang_data']['lang_short'];
+
+    final _uri = Uri.parse(
+        _lang == 'TR'? sabbehStoreUrlTr:
+        _lang == 'AR'? sabbehStoreUrlAr:
+        sabbehStoreUrl
+    );
+    if (!await launchUrl(_uri)) {
+      throw Exception('Could not launch $_uri');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +72,14 @@ class CounterPageDrawer extends StatelessWidget {
         text: _pageText['global_report'],
         onTap: () => {Navigator.pushNamed(context, GlobalReportScreen.route)},
       ),
+      DrawerListTile(
+        iconImage: Image.asset(
+          'assets/images/sabbehLogo.png',
+          scale: 65,
+        ),
+        text: 'Sabbe7 Store',
+        onTap: () => _launchStoreURL(),
+      )
     ];
 
 
@@ -116,16 +139,17 @@ class CounterPageDrawer extends StatelessWidget {
 }
 
 class DrawerListTile extends StatelessWidget {
-  const DrawerListTile({required this.icon, required this.text, required this.onTap});
+  const DrawerListTile({this.icon, required this.text, required this.onTap, this.iconImage});
 
-  final IconData icon;
+  final Widget? iconImage;
+  final IconData? icon;
   final String text;
   final onTap;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(                         ////Counter Report Tile
-     leading:  Icon(icon,
+     leading: iconImage ?? Icon(icon,
        size: 30,
      ),
      title:  Text(text,

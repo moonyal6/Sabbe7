@@ -40,7 +40,8 @@ const Map<String, dynamic> tr = {
       'title': 'Ayarlar',
     '@tiles': {
       'vibration': "Titreşim",
-      'language': "Dil"
+      'language': "Dil",
+      "about_us": "Hakkimizda"
     },
   },
   '@account_management_page': {

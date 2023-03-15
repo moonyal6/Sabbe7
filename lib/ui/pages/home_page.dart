@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sabbeh_clone/ui/cubit/firebase_cubits/auth/auth_cubit.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../../components/counter_pages_drawer.dart';
-import 'counter_page1.dart';
-import 'counter_page2.dart';
-import 'counter_page3.dart';
+import '../components/counter_page/counter_pages_drawer.dart';
+import 'counters/counter_page1.dart';
+import 'counters/counter_page2.dart';
+import 'counters/counter_page3.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,6 +16,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final controller = PageController(viewportFraction: 0.8, keepPage: true);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    AuthCubit.get(context).getUserData(uId: AuthCubit.get(context).currentUser?.id);
+  }
+
 
   @override
   Widget build(BuildContext context) {

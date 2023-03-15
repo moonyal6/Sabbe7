@@ -3,16 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counter_cubit1.dart';
-import 'package:sabbeh_clone/ui/pages/authentication/sign_in_screen.dart';
+import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
+import 'package:sabbeh_clone/ui/pages/authentication/sign_in_page.dart';
 import '../../../shared/constants/text_constants/turkish_text_constants.dart';
-import '../../components/dialogs/error_dialog.dart';
-import '../../components/text_fields.dart';
-import '../../cubit/counters_cubits/counter_cubit2.dart';
-import '../../cubit/counters_cubits/counter_cubit3.dart';
+import '../../components/app_pages_components/dialogs/error_dialog.dart';
+import '../../components/app_pages_components/text_fields.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
 import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../../cubit/firebase_cubits/auth/auth_states.dart';
-import '../../providers/lang_provider.dart';
 
 
 bool showSpinner = false;

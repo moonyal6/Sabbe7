@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'counters_cubit.dart';
-import 'counter_mixin.dart';
+import '../counters_cubit.dart';
+import '../counter_mixin.dart';
 
-const _cntName = 'counter_3';
-class CounterCubit3 extends CountersCubit with CounterMixin{
-  CounterCubit3(): super(0);
+const _cntName = 'counter_2';
+class CounterCubit2 extends CountersCubit with CounterMixin{
+  CounterCubit2(): super(0);
 
-  static CounterCubit3 get(context) => BlocProvider.of(context);
+  static CounterCubit2 get(context) => BlocProvider.of(context);
 
   Future<void> initState(BuildContext context) async{
     int initCnt = await readLocalCount(context, _cntName);

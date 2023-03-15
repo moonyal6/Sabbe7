@@ -40,7 +40,8 @@ const Map<String, dynamic> ar = {
     'title': 'الإعدادات',//
     '@tiles': {
       'vibration': "الإهتزاز",//
-      'language': "اللغة"
+      'language': "اللغة",
+      "about_us": "من نحن"
     }
   },
   '@account_management_page': {

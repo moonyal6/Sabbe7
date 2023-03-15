@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../shared/constants/style_constants/text_style_constants.dart';
-import '../cubit/counters_cubits/counter_cubit1.dart';
-import '../cubit/counters_cubits/counter_cubit2.dart';
-import '../cubit/counters_cubits/counter_cubit3.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
 import '../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../cubit/firebase_cubits/auth/auth_states.dart';
 import '../cubit/firebase_cubits/firestore/firestore_cubit.dart';

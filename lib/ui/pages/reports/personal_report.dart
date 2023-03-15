@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/controllers/counters_controllers/counters_controller.dart';
 import '../../../main.dart';
 import '../../../shared/constants/style_constants/text_style_constants.dart';
-import '../../cubit/counters_cubits/counter_cubit1.dart';
-import '../../cubit/counters_cubits/counter_cubit2.dart';
-import '../../cubit/counters_cubits/counter_cubit3.dart';
-import '../../providers/lang_provider.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
 
 
 class PersonalReportScreen extends StatelessWidget {
@@ -76,18 +76,18 @@ class PersonalReportScreen extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                    Text(
+                      context.read<CounterCubit1>().state.toString(),
+                      style: kReport,
+                     ),
                      Text(
-                       context.read<CounterCubit1>().state.toString(),
+                       context.read<CounterCubit2>().state.toString(),
                        style: kReport,
-                      ),
-                      Text(
-                        context.read<CounterCubit2>().state.toString(),
-                        style: kReport,
-                      ),
-                      Text(
-                        context.read<CounterCubit3>().state.toString(),
-                        style: kReport,
-                      ),
+                     ),
+                     Text(
+                       context.read<CounterCubit3>().state.toString(),
+                       style: kReport,
+                     ),
                     ],
                   ),
                 ],

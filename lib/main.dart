@@ -1,29 +1,29 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi_language_json/multi_language_json.dart';
-import 'package:sabbeh_clone/shared/constants/text_constants/english_text_constants.dart';
+import 'data/controllers/counters_controllers/counters_controller.dart';
+import 'firebase_options.dart';
+
 import 'package:sabbeh_clone/shared/constants/text_constants/turkish_text_constants.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counter_cubit1.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counter_cubit2.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counter_cubit3.dart';
+import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
+import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
+import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
 import 'package:sabbeh_clone/ui/cubit/firebase_cubits/auth/auth_cubit.dart';
 import 'package:sabbeh_clone/ui/cubit/firebase_cubits/firestore/firestore_cubit.dart';
 import 'package:sabbeh_clone/ui/cubit/settings_cubits/sound_cubit.dart';
 import 'package:sabbeh_clone/ui/cubit/settings_cubits/vibration_cubit.dart';
-import 'package:sabbeh_clone/ui/pages/authentication/sign_in_screen.dart';
-import 'package:sabbeh_clone/ui/pages/authentication/sign_up_screen.dart';
-import 'package:sabbeh_clone/ui/pages/authentication/user_management_screen.dart';
-import 'package:sabbeh_clone/ui/pages/counters/home_page.dart';
+import 'package:sabbeh_clone/ui/pages/authentication/sign_in_page.dart';
+import 'package:sabbeh_clone/ui/pages/authentication/sign_up_page.dart';
+import 'package:sabbeh_clone/ui/pages/authentication/user_management_page.dart';
+import 'package:sabbeh_clone/ui/pages/home_page.dart';
 import 'package:sabbeh_clone/ui/pages/debug_screen.dart';
 import 'package:sabbeh_clone/ui/pages/reports/global_report_screen.dart';
 import 'package:sabbeh_clone/ui/pages/reports/personal_report.dart';
 import 'package:sabbeh_clone/ui/pages/settings_page.dart';
 import 'package:sabbeh_clone/ui/pages/splash_screen.dart';
-import 'package:sabbeh_clone/ui/providers/lang_provider.dart';
+
 import 'package:provider/provider.dart';
-import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 const Map<String, dynamic> appLang = tr;
 
@@ -32,6 +32,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await CacheHelper.init();
+  await CacheHelper.saveData(key: 'lang', value: 'tr');
+
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -55,6 +57,8 @@ class SabbehApp extends StatelessWidget {
   SabbehApp({Key? key}) : super(key: key);
 
 
+
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -75,7 +79,7 @@ class SabbehApp extends StatelessWidget {
           create: (_) =>  SoundCubit(),
         ),
         BlocProvider(
-          create: (_) =>  AuthCubit()..getUserData(uId: CacheHelper.getString(key: 'uId')),
+          create: (_) =>  AuthCubit()..getUserData(uId: CacheHelper.getString(key: 'uid')),
         ),
         BlocProvider(
           create: (_) =>  FirestoreCubit(),

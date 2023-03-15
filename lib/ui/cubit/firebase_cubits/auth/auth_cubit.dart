@@ -26,12 +26,9 @@ todo:
 */
 //
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counter_cubit1.dart';
 import 'package:sabbeh_clone/ui/cubit/firebase_cubits/firestore/firestore_cubit.dart';
 
 import '../../../../data/models/user_model.dart';
-import '../../counters_cubits/counter_cubit2.dart';
-import '../../counters_cubits/counter_cubit3.dart';
 import 'auth_states.dart';
 
 // import 'my_auth_states.dart';
@@ -112,6 +109,7 @@ class AuthCubit extends Cubit<AuthStates> {
         print('is data saved: $isSaved');
         print('logged in');
         print(currentUser!.email);
+        print('uId: ${CacheHelper.getString(key: 'uId')}');
       }).catchError((onError){
         emit(AuthErrorState(onError.toString()));
       });
@@ -125,22 +123,26 @@ class AuthCubit extends Cubit<AuthStates> {
 
   ////sign in user
   //TODO: call login from api then call checkUser and catch error
-  void signInUser({required String email, required String password}) {
+  Future<void> signInUser({required String email, required String password}) async {
     print('Auth State: Loading');
     emit(AuthLoadingState());
+    var uid;
     try {
-      _auth.loginUser(
+      await _auth.loginUser(
           email: email,
           password: password
       ).then((value) async {
         checkUserExistInFirebase(uid: value.user!.uid);
-        bool isSaved = await CacheHelper.saveData(key: 'uid', value: value.user!.uid);
-        print('is data saved: $isSaved');
+        uid = value.user!.uid;
+        print('logged in');
+
       }).catchError((onError) {
         emit(AuthErrorState(onError.toString()));
         print('Error Sign In: $onError');
       });
-
+      bool isSaved = await CacheHelper.saveData(key: 'uid', value: uid);
+      print('is data saved: $isSaved');
+      print('uId: ${CacheHelper.getString(key: 'uId')}');
     }
     on FirebaseAuthException catch (e){
       print('AuthError: Sign In: ${e.code}');
@@ -171,27 +173,29 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
 
-  void getUserData({required String uId}) {
+  void getUserData({required String? uId}) {
     print('getting user');
-    if (uId.isNotEmpty) {
-      _auth.getUserData(uId: uId).then((value){
-        if (value.exists) {
-          print("User: $uId");
-          currentUser =
-              UserModel.fromJsonMap(map: value.data()!, uId: value.id);
-        } else {
-          print("User not found");
-          print("User: $uId");
-          emit(AuthLoggedOutState());
-        }
-        emit(AuthLoggedInState(uId));
-      }).catchError((onError){
-        emit(AuthErrorState(onError.toString()));
-      });
-    }
-    else{
-      print("User not found");
-      emit(AuthLoggedOutState());
+    if (uId != null) {
+      if (uId.isNotEmpty) {
+        _auth.getUserData(uId: uId).then((value) {
+          if (value.exists) {
+            print("User: $uId");
+            currentUser =
+                UserModel.fromJsonMap(map: value.data()!, uId: value.id);
+          } else {
+            print("User not found");
+            print("User: $uId");
+            emit(AuthLoggedOutState());
+          }
+          emit(AuthLoggedInState(uId));
+        }).catchError((onError) {
+          emit(AuthErrorState(onError.toString()));
+        });
+      }
+      else{
+        print("User not found");
+        emit(AuthLoggedOutState());
+      }
     }
   }
 

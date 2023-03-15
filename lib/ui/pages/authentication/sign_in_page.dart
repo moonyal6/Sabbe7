@@ -5,13 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/ui/components/dialogs/error_dialog.dart';
-import 'package:sabbeh_clone/ui/pages/authentication/sign_up_screen.dart';
+import 'package:sabbeh_clone/ui/pages/authentication/sign_up_page.dart';
 import '../../../shared/constants/text_constants/turkish_text_constants.dart';
-import '../../components/text_fields.dart';
+import '../../components/app_pages_components/dialogs/error_dialog.dart';
+import '../../components/app_pages_components/text_fields.dart';
 import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../../cubit/firebase_cubits/auth/auth_states.dart';
-import '../../providers/lang_provider.dart';
 
 
 bool showSpinner = false;

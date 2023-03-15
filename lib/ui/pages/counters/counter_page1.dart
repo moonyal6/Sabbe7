@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/ui/components/sabbeh_button.dart';
 
 import '../../../shared/constants/style_constants/images_constants.dart';
 import '../../../shared/constants/style_constants/text_style_constants.dart';
 import '../../../shared/constants/text_constants/arabic_text_constants.dart';
 import '../../../shared/constants/text_constants/turkish_text_constants.dart';
-import '../../cubit/counters_cubits/counter_cubit1.dart';
-import '../../providers/lang_provider.dart';
+import '../../components/counter_page/sabbeh_button.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
+import '../../../data/controllers/counters_controllers/counters_controller.dart';
 
 
 class CounterPage1 extends StatelessWidget {
@@ -17,10 +17,7 @@ class CounterPage1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> _pageText = appLang['@counters'];
-
     return Container(
-      // color: Colors.red,
-      width: MediaQuery.of(context).size.width,
       child: SabbehButton(() {
         context.read<CounterCubit1>().addCount(context);
       },

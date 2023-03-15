@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/ui/providers/lang_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../shared/constants/constants.dart';
 import '../../shared/constants/text_constants/arabic_text_constants.dart';
 import '../../shared/constants/text_constants/english_text_constants.dart';
 import '../../shared/constants/text_constants/turkish_text_constants.dart';
-import '../components/settings_tile.dart';
+import '../components/app_pages_components/settings_tile.dart';
 import '../cubit/settings_cubits/sound_cubit.dart';
 import '../cubit/settings_cubits/vibration_cubit.dart';
 
@@ -18,6 +19,24 @@ class SettingsPage extends StatefulWidget {
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
+
+
+
+
+Future<void> _launchAboutUsURL() async {
+  String _lang = appLang['@lang_data']['lang_short'];
+
+  final _uri = Uri.parse(
+      _lang == 'TR'? aboutUsUrlTr:
+      _lang == 'AR'? aboutUsUrlAr:
+      aboutUsUrl
+  );
+  if (!await launchUrl(_uri)) {
+    throw Exception('Could not launch $_uri');
+  }
+}
+
+
 
 class _SettingsPageState extends State<SettingsPage> {
 
@@ -77,6 +96,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     //     }).toList(),
                     //   ),
                     // ),
+                    SettingsTile(
+                      title: _pageText['@tiles']['about_us'],
+                      icon: Icons.info_outline,
+                      onTap: () {
+                        _launchAboutUsURL();
+                      },
+                    )
                   ],
                 ),
               ),

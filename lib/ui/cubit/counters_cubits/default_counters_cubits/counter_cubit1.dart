@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'counters_cubit.dart';
-import 'counter_mixin.dart';
+import '../counters_cubit.dart';
+import '../counter_mixin.dart';
 
 const _cntName = 'counter_1';
 class CounterCubit1 extends CountersCubit with CounterMixin {

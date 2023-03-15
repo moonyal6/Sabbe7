@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/ui/components/sabbeh_button.dart';
 
 import '../../../shared/constants/style_constants/images_constants.dart';
 import '../../../shared/constants/style_constants/text_style_constants.dart';
 import '../../../shared/constants/text_constants/turkish_text_constants.dart';
-import '../../cubit/counters_cubits/counter_cubit3.dart';
-import '../../providers/lang_provider.dart';
+import '../../components/counter_page/sabbeh_button.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
 
 
 class CounterPage3 extends StatelessWidget {

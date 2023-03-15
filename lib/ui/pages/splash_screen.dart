@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../cubit/counters_cubits/counter_cubit1.dart';
-import '../cubit/counters_cubits/counter_cubit2.dart';
-import '../cubit/counters_cubits/counter_cubit3.dart';
-import 'counters/home_page.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
+import 'home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

@@ -41,7 +41,8 @@ const Map<String, dynamic> en =
     'title': 'Settings',
     '@tiles': {
       'vibration': "Vibration",
-      'language': "Language"
+      'language': "Language",
+      "about_us": "About Us"
     }
   },
   '@account_management_page': {

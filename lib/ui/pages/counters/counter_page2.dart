@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/ui/components/sabbeh_button.dart';
 
 
 import '../../../shared/constants/style_constants/images_constants.dart';
 import '../../../shared/constants/style_constants/text_style_constants.dart';
 import '../../../shared/constants/text_constants/turkish_text_constants.dart';
-import '../../cubit/counters_cubits/counter_cubit2.dart';
-import '../../providers/lang_provider.dart';
+import '../../components/counter_page/sabbeh_button.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
 
 
 class CounterPage2 extends StatelessWidget {
@@ -20,7 +19,6 @@ class CounterPage2 extends StatelessWidget {
 
     return SafeArea(
         child: Container(
-          // color: Colors.white54,
           child: SabbehButton(() {
             context.read<CounterCubit2>().addCount(context);
           },
