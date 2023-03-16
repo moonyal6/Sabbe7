@@ -12,7 +12,7 @@ class CounterCubit3 extends CountersCubit with CounterMixin{
   static CounterCubit3 get(context) => BlocProvider.of(context);
 
   void addCount(BuildContext context) {
-    emit(state + 100);
+    emit(state + 1);
     increment(context,
         count: state,
         counterKey: _cntKey
