@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sabbeh_clone/main.dart';
+import 'package:sabbeh_clone/shared/constants/constants.dart';
 
 
 import '../../../shared/constants/style_constants/images_constants.dart';
 import '../../../shared/constants/style_constants/text_style_constants.dart';
-import '../../../shared/constants/text_constants/turkish_text_constants.dart';
+import '../../../shared/constants/text_constants/arabic_text_constants.dart';
 import '../../components/counter_page/sabbeh_button.dart';
 import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
 
 
 class CounterPage2 extends StatelessWidget {
-  static String route = 'counter_2';
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +34,10 @@ class CounterPage2 extends StatelessWidget {
                     SizedBox(height: 100),
                     Column(
                       children: [
-                        const Text('الحمد لله',
+                        Text(ar['@reports']['@local_report']['@counters'][cnt2_key],
                           style: kCounterName,
                         ),
-                        Text(_pageText['counter_2'],
+                        Text(_pageText[cnt2_key],
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 18,

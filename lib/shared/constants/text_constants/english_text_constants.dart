@@ -1,20 +1,27 @@
+import '../constants.dart';
+
 const Map<String, dynamic> en =
 {
   '@lang_data': {
-    'lang_short': 'EN',
+    'lang_short': 'en',
     'lang_name': 'English'
   },
   '@counters': {
-    'counter_1': 'Subhanallah',
-    'counter_2': 'Alhamdulillah',
-    'counter_3': 'Allahu Akbar',
+    cnt1_key: 'Subhanallah',
+    cnt2_key: 'Alhamdulillah',
+    cnt3_key: 'Allahu Akbar',
+    cnt4_key: 'La ilaha illallah',
+    cnt5_key: 'Astaghfirullah',
+    cnt6_key: 'Sallallahu Alaihi Wasallam'
   },
   '@drawer': {
     'account_management': 'Account Management',
     'sign_in': 'Sign In',
     'settings': 'Settings',
     'local_report': 'Personal Report',
-    'global_report': 'Public Report'
+    'global_report': 'Public Report',
+    'store': 'Sabbe7 Store',
+    'about_us': 'About Us'
   },
   '@auth_pages': {
     'email': 'Email',
@@ -40,9 +47,9 @@ const Map<String, dynamic> en =
   '@settings_page': {
     'title': 'Settings',
     '@tiles': {
-      'vibration': "Vibration",
-      'language': "Language",
-      "about_us": "About Us"
+      'vibration': 'Vibration',
+      'sound': 'Sound',
+      'language': 'Language',
     }
   },
   '@account_management_page': {
@@ -64,9 +71,12 @@ const Map<String, dynamic> en =
     '@local_report': {
       'local_report': 'Personal Report',
       '@counters': {
-        'counter_1': 'Subhanallah',
-        'counter_2': 'Alhamdulillah',
-        'counter_3': 'Allahu Akbar',
+        cnt1_key: 'Subhanallah',
+        cnt2_key: 'Alhamdulillah',
+        cnt3_key: 'Allahu Akbar',
+        cnt4_key: 'La ilaha illallah',
+        cnt5_key: 'Astaghfirullah',
+        cnt6_key: 'S.A.W.'
       },
     },
   },

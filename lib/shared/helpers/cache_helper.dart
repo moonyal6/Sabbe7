@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheHelper
@@ -18,8 +17,8 @@ class CacheHelper
   static String getString({required String key})
   {
     final data = sharedPreferences.getString(key) ?? '';
-    print('data $data');
-    return  data;
+    print('SharedPref reading $key: $data');
+    return data;
   }
 
   static int getInteger({required String key})
@@ -35,7 +34,7 @@ class CacheHelper
   static Future<bool> saveData({required String key, required dynamic value}) async
   {
      if(value is String) {
-       print('writing to $key:  $value');
+       print('SharedPref writing $key: $value');
        return await sharedPreferences.setString(key, value);
      } else if(value is bool) {
        return await sharedPreferences.setBool(key, value);

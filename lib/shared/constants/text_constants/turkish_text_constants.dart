@@ -1,12 +1,17 @@
+import '../constants.dart';
+
 const Map<String, dynamic> tr = {
   '@lang_data': {
-    'lang_short': 'TR',
+    'lang_short': 'tr',
     'lang_name': 'Türkçe'
   },
   '@counters': {
-    'counter_1': 'Sübhanallah',
-    'counter_2': 'Elhamdülillah',
-    'counter_3': 'Allahu Ekber',
+    cnt1_key: 'Sübhanallah',
+    cnt2_key: 'Elhamdülillah',
+    cnt3_key: 'Allahu Ekber',
+    cnt4_key: 'La İlahe İllallah',
+    cnt5_key: 'Estağfirullah',
+    cnt6_key: 'Sallallahu Aleyhi ve Sellem'
   },
   '@drawer': {
     'account_management': 'Hesap Yönetimi',
@@ -14,6 +19,8 @@ const Map<String, dynamic> tr = {
     'settings': 'Ayarlar',
     'local_report': 'Şahıs Rapor',
     'global_report': 'Genel Rapor',
+    'store': 'Sabbe7 Mağaza',
+    'about_us': 'Hakkimizda'
   },
   '@auth_pages': {
     'email': 'E-Posta',
@@ -39,9 +46,9 @@ const Map<String, dynamic> tr = {
   '@settings_page': {
       'title': 'Ayarlar',
     '@tiles': {
-      'vibration': "Titreşim",
-      'language': "Dil",
-      "about_us": "Hakkimizda"
+      'vibration': 'Titreşim',
+      'sound': 'Ses',
+      'language': 'Dil',
     },
   },
   '@account_management_page': {
@@ -63,9 +70,12 @@ const Map<String, dynamic> tr = {
     '@local_report': {
       'local_report': 'Şahıs Rapor',
       '@counters': {
-        'counter_1': 'Sübhanallah',
-        'counter_2': 'Elhamdülillah',
-        'counter_3': 'Allahu Ekber',
+        cnt1_key: 'Sübhanallah',
+        cnt2_key: 'Elhamdülillah',
+        cnt3_key: 'Allahu Ekber',
+        cnt4_key: 'La İlahe İllallah',
+        cnt5_key: 'Estağfirullah',
+        cnt6_key: 'S.A.V.'
       },
     },
   },

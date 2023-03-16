@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'data/controllers/counters_controllers/counters_controller.dart';
+import 'package:sabbeh_clone/shared/constants/text_constants/english_text_constants.dart';
+import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit4.dart';
+import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit5.dart';
+import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit6.dart';
 import 'firebase_options.dart';
 
-import 'package:sabbeh_clone/shared/constants/text_constants/turkish_text_constants.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
 import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
@@ -21,18 +23,17 @@ import 'package:sabbeh_clone/ui/pages/reports/personal_report.dart';
 import 'package:sabbeh_clone/ui/pages/settings_page.dart';
 import 'package:sabbeh_clone/ui/pages/splash_screen.dart';
 
-import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-const Map<String, dynamic> appLang = tr;
+const Map<String, dynamic> appLang = en;
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await CacheHelper.init();
-  await CacheHelper.saveData(key: 'lang', value: 'tr');
+  await CacheHelper.saveData(key: 'lang', value: appLang['@lang_data']['lang_short']);
 
 
   await Firebase.initializeApp(
@@ -73,6 +74,15 @@ class SabbehApp extends StatelessWidget {
           create: (_) =>  CounterCubit3(),
         ),
         BlocProvider(
+          create: (_) =>  CounterCubit4(),
+        ),
+        BlocProvider(
+          create: (_) =>  CounterCubit5(),
+        ),
+        BlocProvider(
+          create: (_) =>  CounterCubit6(),
+        ),
+        BlocProvider(
           create: (_) =>  VibrationCubit(),
         ),
         BlocProvider(
@@ -91,9 +101,6 @@ class SabbehApp extends StatelessWidget {
         routes: {
           SplashScreen.route : (context) => SplashScreen(),
           HomePage.route : (context) => HomePage(),
-          // CounterPage1.route : (context) => CounterPage1(),
-          // CounterPage2.route : (context) => CounterPage2(),
-          // CounterPage3.route : (context) => CounterPage3(),
           SettingsPage.route : (context) => SettingsPage(),
           PersonalReportScreen.route : (context) => PersonalReportScreen(),
           SignInScreen.route : (context) => SignInScreen(),
@@ -102,7 +109,7 @@ class SabbehApp extends StatelessWidget {
           GlobalReportScreen.route : (context) => GlobalReportScreen(),
           UserManagementScreen.route : (context) => UserManagementScreen(),
         },
-        initialRoute: SplashScreen.route,
+        initialRoute: HomePage.route,
         builder: (context, child) {
           return ScrollConfiguration(behavior: AppScrollBehavior(), child: child!);
         },

@@ -5,6 +5,9 @@ import '../components/counter_page/counter_pages_drawer.dart';
 import 'counters/counter_page1.dart';
 import 'counters/counter_page2.dart';
 import 'counters/counter_page3.dart';
+import 'counters/counter_page4.dart';
+import 'counters/counter_page5.dart';
+import 'counters/counter_page6.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -57,13 +60,25 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: CounterPage3(),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: CounterPage4(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: CounterPage5(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: CounterPage6(),
+                    ),
                   ],
                 ),
                 Positioned(
                   bottom: 75,
                   child: SmoothPageIndicator(
                       controller: controller,
-                      count: 3,
+                      count: 6,
                       effect: WormEffect(
                         activeDotColor: Colors.white,
                         dotHeight: 10,

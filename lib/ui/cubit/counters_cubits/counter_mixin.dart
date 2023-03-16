@@ -17,7 +17,7 @@ mixin CounterMixin {
     await CacheHelper.saveData(key: counterKey, value: count);
     if(authState is AuthLoggedInState) {
       String uid = authState.uId;
-      firestore.addCountGlobal(1);
+      firestore.addCountGlobal({counterKey: 1});
       firestore.addUserCount(
           uid: uid,
           counterKey: counterKey
@@ -30,9 +30,5 @@ mixin CounterMixin {
 
   void reset(BuildContext context, String counterField){
     context.read<FirestoreCubit>().resetUserCount(context, counterField);
-  }
-
-  int readLocalCount(BuildContext context, String counterField){
-    return CacheHelper.getInteger(key: counterField);
   }
 }

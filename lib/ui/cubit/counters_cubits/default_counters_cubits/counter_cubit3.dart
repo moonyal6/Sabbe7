@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sabbeh_clone/shared/constants/constants.dart';
+import '../../../../shared/helpers/cache_helper.dart';
 import '../counters_cubit.dart';
 import '../counter_mixin.dart';
 
-const _cntName = 'counter_3';
+const _cntKey = cnt3_key;
 class CounterCubit3 extends CountersCubit with CounterMixin{
-  CounterCubit3(): super(0);
+  CounterCubit3(): super(CacheHelper.getInteger(key: _cntKey));
 
   static CounterCubit3 get(context) => BlocProvider.of(context);
 
-  Future<void> initState(BuildContext context) async{
-    int initCnt = await readLocalCount(context, _cntName);
-    emit(state + initCnt);
-  }
-
   void addCount(BuildContext context) {
-    emit(state + 1);
+    emit(state + 100);
     increment(context,
         count: state,
-        counterKey: _cntName
+        counterKey: _cntKey
     );
   }
 }

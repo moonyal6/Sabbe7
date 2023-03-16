@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sabbeh_clone/data/api/firestore_api.dart';
+import 'package:sabbeh_clone/shared/constants/constants.dart';
+import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 
 import 'firestore_states.dart';
 
@@ -38,18 +38,33 @@ class FirestoreCubit extends Cubit<FirestoreStates>{
 
   /* Global Counter Methods */
 
-   void addCountGlobal(int count) async {
+   void addCountGlobal(Map<String, int> counters) {
      // firestoreIncrement(ref: _globalRef, field: 'global_count');
-     _firestoreApi.getDoc(docRef: _globalRef).then((value){
-       final result = value.data() as Map<String, dynamic>;
-        print("global counter: ${result['total_counts']}");
-        _firestoreApi.updateDoc(
-            docRef: _globalRef,
-            fields: {
-              'total_counts': result['total_counts'] + count
-            });
-     });
-   }
+
+      _firestoreApi.getDoc(docRef: _globalRef).then((value) async{
+        try{
+          final result = value.data() as Map<String, dynamic>;
+          print("adding to global");
+          int totalCount = counters.values.reduce((sum, value) => sum + value);
+          counters['total_counts'] = totalCount;
+
+          final newData = result;
+          for (var key in counters.keys) {
+            newData.update(key, (value) => value + counters[key]);
+          }
+
+          print("global counter: ${newData['total_counts']}");
+          await _firestoreApi.updateDoc(docRef: _globalRef, fields: newData);
+
+          print("added");
+        }
+        catch(e){
+          print("can't add to global : $e");
+        }
+      });
+
+
+  }
 
    void resetGlobalCounter() async{
      // firestoreResetCounter(ref: globalRef, field: "global_count");
@@ -71,13 +86,43 @@ class FirestoreCubit extends Cubit<FirestoreStates>{
   void addUserCount({required String uid, required String counterKey}){
     _firestoreApi.getDoc(docRef: _userCounterCollection(uid)).then((value) {
       final result = value.data() as Map<String, dynamic>;
-      _firestoreApi.updateDoc(
-          docRef: _userCounterCollection(uid),
-          fields: {
-            counterKey: result[counterKey] + 1
-          });
+      try{
+        _firestoreApi.updateDoc(
+            docRef: _userCounterCollection(uid),
+            fields: {counterKey: result[counterKey] + 1});
+      }
+      catch(e){
+        print('field not found');
+        _firestoreApi.updateDoc(
+            docRef: _userCounterCollection(uid),
+            fields: {counterKey: CacheHelper.getInteger(key: counterKey)});
+      }
     });
+  }
 
+  void updateUserCounterDocs({required String? uid}){
+    print('Checking User Counter Docs');
+    print('up uid: $uid');
+    if(uid != null){
+      print('updating');
+      _firestoreApi.getDoc(docRef: _userCounterCollection(uid)).then((value) {
+        final result = value.data() as Map<String, dynamic>;
+        docContains(key) => result.containsKey(key);
+        if (!docContains(cnt4_key) &&
+            !docContains(cnt5_key) &&
+            !docContains(cnt6_key)) {
+          int counter4 = CacheHelper.getInteger(key: cnt4_key);
+          int counter5 = CacheHelper.getInteger(key: cnt5_key);
+          int counter6 = CacheHelper.getInteger(key: cnt6_key);
+          _firestoreApi.updateDoc(docRef: _userCounterCollection(uid), fields: {
+            'counter_4': counter4,
+            'counter_5': counter5,
+            'counter_6': counter6,
+          });
+        }
+        print('updated');
+      });
+    }else{print('not updated');}
   }
 
    void createUserCounters({required String uid}) async{
@@ -88,6 +133,9 @@ class FirestoreCubit extends Cubit<FirestoreStates>{
            'counter_1': 0,
            'counter_2': 0,
            'counter_3': 0,
+           'counter_4': 0,
+           'counter_5': 0,
+           'counter_6': 0,
          });
    }
 

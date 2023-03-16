@@ -1,11 +1,6 @@
-
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
 import 'home_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -55,9 +50,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _loadData() async{
     // context.read<AuthCubit>().initState();
-    context.read<CounterCubit1>().initState(context);
-    context.read<CounterCubit2>().initState(context);
-    context.read<CounterCubit3>().initState(context);
+    // context.read<CounterCubit1>().initState(context);
+    // context.read<CounterCubit2>().initState(context);
+    // context.read<CounterCubit3>().initState(context);
 
     // await context.read<SharedPrefCubit>().loadCounter();
     // print(context.read<SharedPrefCubit>().counter);

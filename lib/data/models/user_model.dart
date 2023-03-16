@@ -1,7 +1,7 @@
 class UserModel{
   late String id;
   late String email;
-  late List<int> counters;
+  late Map<String, int> counters;
 
 
   UserModel({
@@ -23,11 +23,14 @@ class UserModel{
     };
   }
 
-  Map<String,int> counterMap(){
-    return {
-      'counter_1': counters[0],
-      'counter_2': counters[1],
-      'counter_3': counters[2],
-    };
-  }
+  // Map<String,int> counterMap(){
+  //   return {
+  //     cnt1_key: counters[0],
+  //     cnt2_key: counters[1],
+  //     cnt3_key: counters[2],
+  //     cnt4_key: counters[3],
+  //     cnt5_key: counters[4],
+  //     cnt6_key: counters[5],
+  //   };
+  // }
 }

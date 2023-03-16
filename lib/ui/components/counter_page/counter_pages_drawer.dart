@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../shared/constants/constants.dart';
 import '../../../shared/constants/style_constants/text_style_constants.dart';
-import '../../../shared/constants/text_constants/turkish_text_constants.dart';
 import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../../cubit/firebase_cubits/auth/auth_states.dart';
 import '../../pages/authentication/sign_in_page.dart';
@@ -34,6 +33,18 @@ class CounterPageDrawer extends StatelessWidget {
     }
   }
 
+  Future<void> _launchAboutUsURL() async {
+    String _lang = appLang['@lang_data']['lang_short'];
+    final _uri = Uri.parse(
+        _lang == 'TR'? aboutUsUrlTr:
+        _lang == 'AR'? aboutUsUrlAr:
+        aboutUsUrl
+    );
+    if (!await launchUrl(_uri)) {
+      throw Exception('Could not launch $_uri');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> _pageText = appLang['@drawer'];
@@ -43,7 +54,7 @@ class CounterPageDrawer extends StatelessWidget {
         builder: (context, state){
           if(state is AuthLoggedInState){
             return DrawerListTile(
-              icon: Icons.person_outline,
+              icon: Icons.manage_accounts_outlined,
               text: _pageText['account_management'],
               onTap: () => {Navigator.pushNamed(context, UserManagementScreen.route)},
             );
@@ -77,15 +88,20 @@ class CounterPageDrawer extends StatelessWidget {
           'assets/images/sabbehLogo.png',
           scale: 65,
         ),
-        text: 'Sabbe7 Store',
+        text: _pageText['store'],
         onTap: () => _launchStoreURL(),
+      ),
+      DrawerListTile(
+        icon: Icons.info_outline,
+        text: _pageText['about_us'],
+        onTap: () => _launchAboutUsURL(),
       )
     ];
 
 
     void _checkDebug(){
-      if (false){
-      // if (kDebugMode) {
+      const bool debugEnabled = false;
+      if (kDebugMode && debugEnabled) {
         drawerList.add(
           Column(
             children: [
@@ -109,7 +125,6 @@ class CounterPageDrawer extends StatelessWidget {
     }
 
     _checkDebug();
-
     return SizedBox(
       width: 230,
       child: Drawer(

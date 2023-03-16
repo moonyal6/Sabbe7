@@ -1,11 +1,8 @@
-
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:sabbeh_clone/data/api/auth_api.dart';
-import 'package:sabbeh_clone/data/api/firestore_api.dart';
 
 
 
@@ -43,33 +40,9 @@ class AuthCubit extends Cubit<AuthStates> {
   final _auth = AuthApi();
 
 
-  // Future<void> initState() async{
-  //   final initAuth = await FirebaseAuth.instance;
-  //   auth = initAuth;
-  //   if(auth.currentUser != null){
-  //     // emit(AuthLoggedInState(auth.currentUser));// todo
-  //   }
-  //   else{
-  //     emit(AuthLoggedOutState());
-  //   }
-  // }
-
-  // void getCurrentUser(){
-  //   if(_auth.currentUser == null){
-  //     emit(AuthLoggedOutState());
-  //   }
-  //   else{
-  //     UserModel user = UserModel(
-  //     emit(state)
-  //   }
-  // }
-
-
-
-
   //// Create a New User
   // TODO #DONE#: call 'register' then call 'createUserFields' and catch error
-  void createUser({required String email, required String password, required List<int> counters}) async {
+  void createUser({required String email, required String password, required Map<String, int> counters}) async {
     print('Auth State: Register: Loading');
     emit(AuthLoadingState());
     //register
@@ -91,7 +64,8 @@ class AuthCubit extends Cubit<AuthStates> {
   //// create user counter fields
   /*TODO #DONE#: get user data from parameters and store it in UserModel then call
        authApi 'createUserCounterFields' method and pass the UserModel */
-  void createUserFields({required String email, required String uid, required List<int> counters}){
+  void createUserFields(
+      {required String email, required String uid, required Map<String, int> counters}){
     //user model
     UserModel user = UserModel(
       id: uid,
@@ -101,23 +75,18 @@ class AuthCubit extends Cubit<AuthStates> {
     //call auth method
     _auth.createUserDataDocs(user: user).then((value) {
       _auth.createUserCounterDocs(user: user).then((value) async{
-        final result = user.counters.reduce((sum, value) => sum + value);
-        FirestoreCubit().addCountGlobal(result);
+        // final result = user.counters.reduce((sum, value) => sum + value);
+        FirestoreCubit().addCountGlobal(counters);
         currentUser = user;
         emit(AuthLoggedInState(uid));
-        bool isSaved = await CacheHelper.saveData(key: 'uid', value: currentUser!.id);
-        print('is data saved: $isSaved');
-        print('logged in');
-        print(currentUser!.email);
-        print('uId: ${CacheHelper.getString(key: 'uId')}');
+        await CacheHelper.saveData(key: 'uid', value: currentUser!.id);
       }).catchError((onError){
+        _auth.deleteUserDataDocs(uId: uid);
         emit(AuthErrorState(onError.toString()));
       });
     }).catchError((onError){
       emit(AuthErrorState(onError.toString()));
     });
-
-
   }
 
 
@@ -140,9 +109,7 @@ class AuthCubit extends Cubit<AuthStates> {
         emit(AuthErrorState(onError.toString()));
         print('Error Sign In: $onError');
       });
-      bool isSaved = await CacheHelper.saveData(key: 'uid', value: uid);
-      print('is data saved: $isSaved');
-      print('uId: ${CacheHelper.getString(key: 'uId')}');
+      await CacheHelper.saveData(key: 'uid', value: uid);
     }
     on FirebaseAuthException catch (e){
       print('AuthError: Sign In: ${e.code}');
@@ -173,18 +140,17 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
 
-  void getUserData({required String? uId}) {
-    print('getting user');
+  Future<void> getUserData({required String? uId}) async{
     if (uId != null) {
       if (uId.isNotEmpty) {
-        _auth.getUserData(uId: uId).then((value) {
+        await _auth.getUserData(uId: uId).then((value) {
           if (value.exists) {
-            print("User: $uId");
-            currentUser =
-                UserModel.fromJsonMap(map: value.data()!, uId: value.id);
+            currentUser = UserModel.fromJsonMap(
+                map: value.data()!,
+                uId: value.id
+            );
           } else {
             print("User not found");
-            print("User: $uId");
             emit(AuthLoggedOutState());
           }
           emit(AuthLoggedInState(uId));

@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../../shared/constants/constants.dart';
 import '../../shared/constants/style_constants/text_style_constants.dart';
 import '../cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
 import '../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
 import '../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit4.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit5.dart';
+import '../cubit/counters_cubits/default_counters_cubits/counter_cubit6.dart';
 import '../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../cubit/firebase_cubits/auth/auth_states.dart';
 import '../cubit/firebase_cubits/firestore/firestore_cubit.dart';
@@ -74,11 +78,14 @@ void _showSnackBar(BuildContext context, String text){
                   final password = '123456';
                   final auth = AuthCubit.get(context);
 
-                  List<int> counters = [
-                    CounterCubit1.get(context).state,
-                    CounterCubit2.get(context).state,
-                    CounterCubit3.get(context).state,
-                  ];
+                  Map<String, int> counters = {
+                    cnt1_key: CounterCubit1.get(context).state,
+                    cnt2_key: CounterCubit2.get(context).state,
+                    cnt3_key: CounterCubit3.get(context).state,
+                    cnt4_key: CounterCubit4.get(context).state,
+                    cnt5_key: CounterCubit5.get(context).state,
+                    cnt6_key: CounterCubit6.get(context).state,
+                  };
                   auth.createUser(
                       email: email,
                       password: password,

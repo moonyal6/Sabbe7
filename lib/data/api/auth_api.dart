@@ -38,7 +38,7 @@ class AuthApi {
     return FirebaseFirestore.instance
         .collection(countersCollection)
         .doc(user.id)
-        .set(user.counterMap());
+        .set(user.counters);
   }
 
   Future<void> signOut(){

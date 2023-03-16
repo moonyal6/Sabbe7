@@ -7,10 +7,10 @@ import '../../../shared/constants/style_constants/images_constants.dart';
 import '../../../shared/constants/style_constants/text_style_constants.dart';
 import '../../../shared/constants/text_constants/arabic_text_constants.dart';
 import '../../components/counter_page/sabbeh_button.dart';
-import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit4.dart';
+import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit6.dart';
 
 
-class CounterPage4 extends StatelessWidget {
+class CounterPage6 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class CounterPage4 extends StatelessWidget {
 
     return SafeArea(
       child: SabbehButton(() {
-        context.read<CounterCubit4>().addCount(context);
+        context.read<CounterCubit6>().addCount(context);
       },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -31,20 +31,24 @@ class CounterPage4 extends StatelessWidget {
                 SizedBox(height: 100),
                 Column(
                   children: [
-                    Text(ar['@reports']['@local_report']['@counters'][cnt4_key],
+                    Text(ar['@reports']['@local_report']['@counters'][cnt6_key],
                       style: kCounterName,
                     ),
-                    Text(_pageText[cnt4_key],
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          letterSpacing: 1.5
+                    Container(
+                      width: 240,
+                      child: Text(_pageText['counter_6'],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            letterSpacing: 1.5
+                        ),
                       ),
                     ),
                     SizedBox(height: 20),
                   ],
                 ),
-                BlocBuilder<CounterCubit4, int>(
+                BlocBuilder<CounterCubit6, int>(
                     builder: (context, count) => Text('$count',
                       style: const TextStyle(
                         // fontFamily: 'GE_SS_Two_Bold',
