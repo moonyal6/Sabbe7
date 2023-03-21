@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:language_builder/language_builder.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sabbeh_clone/main.dart';
 import 'package:sabbeh_clone/shared/constants/constants.dart';
@@ -32,7 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = appLang['@auth_pages']['@sign_up_page'];
+    Map<String, dynamic> _pageText = LanguageBuilder.texts!['@auth_pages']['@sign_up_page'];
 
     return Scaffold(
       backgroundColor: Colors.black,

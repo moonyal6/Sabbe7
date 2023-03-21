@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:language_builder/language_builder.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sabbeh_clone/main.dart';
 import '../../components/app_pages_components/card/card_components/card_tile.dart';
@@ -53,7 +54,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = appLang['@account_management_page'];
+    Map<String, dynamic> _pageText = LanguageBuilder.texts!['@account_management_page'];
 
     String mail = AuthCubit.get(context)
         .currentUser!.email;

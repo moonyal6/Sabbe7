@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:language_builder/language_builder.dart';
 import 'package:sabbeh_clone/main.dart';
 import 'package:sabbeh_clone/shared/constants/constants.dart';
 
@@ -14,7 +15,7 @@ class CounterPage3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = appLang['@counters'];
+    Map<String, dynamic> _pageText = LanguageBuilder.texts!['@counters'];
 
     return SafeArea(
         child: SabbehButton(() {

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:language_builder/language_builder.dart';
 import 'package:sabbeh_clone/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,11 +22,11 @@ class CounterPageDrawer extends StatelessWidget {
 
 
   Future<void> _launchStoreURL() async {
-    String _lang = appLang['@lang_data']['lang_short'];
+    String _lang = LanguageBuilder.texts!['@lang_data']['lang_short'];
 
     final _uri = Uri.parse(
-        _lang == 'TR'? sabbehStoreUrlTr:
-        _lang == 'AR'? sabbehStoreUrlAr:
+        _lang == 'tr'? sabbehStoreUrlTr:
+        _lang == 'ar'? sabbehStoreUrlAr:
         sabbehStoreUrl
     );
     if (!await launchUrl(_uri)) {
@@ -34,10 +35,10 @@ class CounterPageDrawer extends StatelessWidget {
   }
 
   Future<void> _launchAboutUsURL() async {
-    String _lang = appLang['@lang_data']['lang_short'];
+    String _lang = LanguageBuilder.texts!['@lang_data']['lang_short'];
     final _uri = Uri.parse(
-        _lang == 'TR'? aboutUsUrlTr:
-        _lang == 'AR'? aboutUsUrlAr:
+        _lang == 'tr'? aboutUsUrlTr:
+        _lang == 'ar'? aboutUsUrlAr:
         aboutUsUrl
     );
     if (!await launchUrl(_uri)) {
@@ -47,7 +48,7 @@ class CounterPageDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = appLang['@drawer'];
+    Map<String, dynamic> _pageText = LanguageBuilder.texts!['@drawer'];
 
     final List<Widget> drawerList = [
       BlocBuilder<AuthCubit, AuthStates>(
@@ -85,8 +86,8 @@ class CounterPageDrawer extends StatelessWidget {
       ),
       DrawerListTile(
         iconImage: Image.asset(
-          'assets/images/sabbehLogo.png',
-          scale: 65,
+          'assets/images/sabbeh_store_icon.png',
+          scale: 45,
         ),
         text: _pageText['store'],
         onTap: () => _launchStoreURL(),
@@ -136,8 +137,7 @@ class CounterPageDrawer extends StatelessWidget {
               height: 160,
               child: DrawerHeader(                              ////DrawerHeader
                   // padding: EdgeInsets.only(top: 15),
-                  child: Image.asset('assets/images/sabbeh_splash_logo.png',
-                    // scale: 0.5,
+                  child: Image.asset('assets/images/sabbeh_tr.png',
                     alignment: Alignment.centerLeft,
                   ),
               ),
@@ -163,7 +163,7 @@ class DrawerListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(                         ////Counter Report Tile
+    return ListTile(////Counter Report Tile
      leading: iconImage ?? Icon(icon,
        size: 30,
      ),
@@ -171,6 +171,7 @@ class DrawerListTile extends StatelessWidget {
        style: kDrawerTiles,
      ),
      onTap: onTap,
+      minLeadingWidth: 42,
             );
   }
 }

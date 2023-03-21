@@ -1,19 +1,24 @@
 {
   "@lang_data": {
-    "lang_short": "EN",
+    "lang_short": "en",
     "lang_name": "English"
   },
   "@counters": {
     "counter_1": "Subhanallah",
     "counter_2": "Alhamdulillah",
-    "counter_3": "Allahu Akbar"
+    "counter_3": "Allahu Akbar",
+    "counter_4": "La ilaha illallah",
+    "counter_5": "Astaghfirullah",
+    "counter_6": "Sallallahu Alaihi Wasallam"
   },
   "@drawer": {
     "account_management": "Account Management",
     "sign_in": "Sign In",
     "settings": "Settings",
     "local_report": "Personal Report",
-    "global_report": "Public Report"
+    "global_report": "Public Report",
+    "store": "Sabbe7 Store",
+    "about_us": "About Us"
   },
   "@auth_pages": {
     "email": "Email",
@@ -40,6 +45,7 @@
     "title": "Settings",
     "@tiles": {
       "vibration": "Vibration",
+      "sound": "Sound",
       "language": "Language"
     }
   },
@@ -64,7 +70,10 @@
       "@counters": {
         "counter_1": "Subhanallah",
         "counter_2": "Alhamdulillah",
-        "counter_3": "Allahu Akbar"
+        "counter_3": "Allahu Akbar",
+        "counter_4": "La ilaha illallah",
+        "counter_5": "Astaghfirullah",
+        "counter_6": "S.A.W."
       }
     }
   }

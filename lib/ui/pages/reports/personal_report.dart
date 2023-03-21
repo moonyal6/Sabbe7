@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:language_builder/language_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:sabbeh_clone/shared/constants/constants.dart';
 import 'package:sabbeh_clone/ui/components/app_pages_components/card/page_card.dart';
@@ -20,13 +21,10 @@ class PersonalReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = appLang['@reports']['@local_report'];
+    Map<String, dynamic> _pageText = LanguageBuilder.texts!['@reports']['@local_report'];
 
     return Scaffold(
       backgroundColor: Colors.black,
-      // appBar: AppBar(
-      //   backgroundColor: Color(0xFF101010),
-      // ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -57,8 +55,8 @@ class PersonalReportScreen extends StatelessWidget {
                   //   ),
                   // ),
                   PageCard(
-                    children:
-                    [Row(
+                    children: [
+                      Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -171,6 +169,7 @@ class PersonalReportScreen extends StatelessWidget {
 
                 ],
               ),
+              const SizedBox(),
               const SizedBox(),
             ],
           ),

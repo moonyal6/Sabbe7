@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:language_builder/language_builder.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 import 'package:sabbeh_clone/main.dart';
@@ -28,7 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = appLang['@auth_pages']['@sign_in_page'];
+    Map<String, dynamic> _pageText = LanguageBuilder.texts!['@auth_pages']['@sign_in_page'];
 
     return Scaffold(
       backgroundColor: Colors.black,

@@ -1,19 +1,24 @@
 {
   "@lang_data": {
-    "lang_short": "TR",
+    "lang_short": "tr",
     "lang_name": "Türkçe"
   },
   "@counters": {
     "counter_1": "Sübhanallah",
     "counter_2": "Elhamdülillah",
-    "counter_3": "Allahu Ekber"
+    "counter_3": "Allahu Ekber",
+    "counter_4": "La İlahe İllallah",
+    "counter_5": "Estağfirullah",
+    "counter_6": "Sallallahu Aleyhi ve Sellem"
   },
   "@drawer": {
     "account_management": "Hesap Yönetimi",
     "sign_in": "Giriş Yap",
     "settings": "Ayarlar",
     "local_report": "Şahıs Rapor",
-    "global_report": "Genel Rapor"
+    "global_report": "Genel Rapor",
+    "store": "Sabbe7 Mağaza",
+    "about_us": "Hakkimizda"
   },
   "@auth_pages": {
     "email": "E-Posta",
@@ -40,6 +45,7 @@
     "title": "Ayarlar",
     "@tiles": {
       "vibration": "Titreşim",
+      "sound": "Ses",
       "language": "Dil"
     }
   },
@@ -64,7 +70,10 @@
       "@counters": {
         "counter_1": "Sübhanallah",
         "counter_2": "Elhamdülillah",
-        "counter_3": "Allahu Ekber"
+        "counter_3": "Allahu Ekber",
+        "counter_4": "La İlahe İllallah",
+        "counter_5": "Estağfirullah",
+        "counter_6": "S.A.V."
       }
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:language_builder/language_builder.dart';
 
 import '../../../main.dart';
 import '../../../shared/constants/text_constants/turkish_text_constants.dart';
@@ -15,7 +16,7 @@ class TextFields extends StatelessWidget {
     return TextFields(
       onChanged: onChanged,
       obscureText: false,
-      text: appLang['@auth_pages']['email'],
+      text: LanguageBuilder.texts!['@auth_pages']['email'],
       icon: Icon(Icons.email_outlined),
     );
   }
@@ -24,7 +25,7 @@ class TextFields extends StatelessWidget {
     return TextFields(
       obscureText: obscureText,
       onChanged: onChanged,
-      text: appLang['@auth_pages']['password'],
+      text: LanguageBuilder.texts!['@auth_pages']['password'],
       icon: Icon(Icons.lock_outline),
     );
   }
@@ -32,7 +33,6 @@ class TextFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = appLang;
 
     return TextField(
         onChanged: onChanged,

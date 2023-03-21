@@ -1,13 +1,14 @@
 import 'package:bloc/bloc.dart';
+import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 
 
 class SoundCubit extends Cubit<bool>{
-  SoundCubit(): super(true);
+  SoundCubit(): super(CacheHelper.getBool(key: 'sound'));
 
   @override
-  bool toggleSound(){
+  void toggleSound(){
     bool value = !state;
     emit(value);
-    return value;
+    CacheHelper.saveData(key: 'sound', value: value);
   }
 }
