@@ -83,6 +83,10 @@ class FirestoreCubit extends Cubit<FirestoreStates>{
 
    /* User Counter Methods */
 
+  getUserCounters({required String uid}){
+    return _firestoreApi.getDoc(docRef: _userCounterCollection(uid));
+  }
+
   void addUserCount({required String uid, required String counterKey}){
     _firestoreApi.getDoc(docRef: _userCounterCollection(uid)).then((value) {
       final result = value.data() as Map<String, dynamic>;

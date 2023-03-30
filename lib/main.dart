@@ -108,7 +108,7 @@ class SabbehApp extends StatelessWidget {
         child:
         MaterialApp(
           theme: ThemeData.dark(),
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: true,
           // supportedLocales: [
           //   Locale('en', 'US'),
           //   Locale('ar', 'SA'),

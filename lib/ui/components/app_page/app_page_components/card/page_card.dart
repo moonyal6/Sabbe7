@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PageCard extends StatelessWidget {
-  const PageCard({required this.children});
+  const PageCard({required this.children, this.padding});
 
   final List<Widget> children;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class PageCard extends StatelessWidget {
       child: Column(
         children: children,
       ),
-      padding: const EdgeInsets.symmetric(
+      padding: padding ?? EdgeInsets.symmetric(
         horizontal: 8,
         vertical: 16,
       ),

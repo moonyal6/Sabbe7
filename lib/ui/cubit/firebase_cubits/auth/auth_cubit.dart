@@ -28,7 +28,6 @@ import 'package:sabbeh_clone/ui/cubit/firebase_cubits/firestore/firestore_cubit.
 import '../../../../data/models/user_model.dart';
 import 'auth_states.dart';
 
-// import 'my_auth_states.dart';
 
 class AuthCubit extends Cubit<AuthStates> {
   AuthCubit() : super(AuthInitialState());
@@ -42,9 +41,9 @@ class AuthCubit extends Cubit<AuthStates> {
 
   //// Create a New User
   // TODO #DONE#: call 'register' then call 'createUserFields' and catch error
-  void createUser({required String email, required String password, required Map<String, int> counters}) async {
+  Future<void> createUser(
+      {required String email, required String password, required Map<String, int> counters}) async {
     print('Auth State: Register: Loading');
-    emit(AuthLoadingState());
     //register
     _auth.registerUser(
         email: email,
@@ -103,6 +102,7 @@ class AuthCubit extends Cubit<AuthStates> {
       ).then((value) async {
         checkUserExistInFirebase(uid: value.user!.uid);
         uid = value.user!.uid;
+
         print('logged in');
 
       }).catchError((onError) {
@@ -167,15 +167,24 @@ class AuthCubit extends Cubit<AuthStates> {
 
 
   //// Sign Out User
-  void signOut(){
-    emit(AuthLoadingState());
-    _auth.signOut().then((value) {
-      currentUser = null;
-      emit(AuthLoggedOutState());
-      CacheHelper.removeData(key: 'uid');
-    }).catchError((onError){
-      emit(AuthErrorState(onError.toString()));
-    });
+  Future<void> signOut()async {
+
+    if(state is AuthLoggedInState){
+      _auth.signOut().then((value) async {
+        print('signing out');
+        currentUser = null;
+        emit(AuthLoggedOutState());
+        await CacheHelper.removeData(key: 'uid');
+        print('signed out success');
+      }).catchError((onError) {
+        emit(AuthErrorState(onError.toString()));
+        print("can't sign out");
+      });
+    }
+    else{
+      print("can't find user");
+      emit(AuthErrorState('No User Found'));
+    }
   }
 
 

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:language_builder/language_builder.dart';
 
-import '../../../main.dart';
-import '../../../shared/constants/text_constants/turkish_text_constants.dart';
 
 class TextFields extends StatelessWidget {
   TextFields({required this.text, required this.icon, required this.obscureText, this.onChanged});

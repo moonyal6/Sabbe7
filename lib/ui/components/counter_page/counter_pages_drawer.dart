@@ -101,7 +101,7 @@ class CounterPageDrawer extends StatelessWidget {
 
 
     void _checkDebug(){
-      const bool debugEnabled = false;
+      const bool debugEnabled = true;
       if (kDebugMode && debugEnabled) {
         drawerList.add(
           Column(

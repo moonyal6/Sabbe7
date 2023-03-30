@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:language_builder/language_builder.dart';
 
-import '../../../../main.dart';
-import '../../../../shared/constants/text_constants/turkish_text_constants.dart';
 
 
 void showErrorDialog(BuildContext context, {String? text, String? title}){
