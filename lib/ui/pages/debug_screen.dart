@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:sabbeh_clone/ui/cubit/counters_cubits/counters_provider.dart';
 
 import '../../shared/constants/constants.dart';
 import '../../shared/constants/style_constants/text_style_constants.dart';
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit4.dart';
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit5.dart';
-import '../cubit/counters_cubits/default_counters_cubits/counter_cubit6.dart';
+import '../../shared/constants/text_constants/arabic_text_constants.dart';
 import '../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../cubit/firebase_cubits/auth/auth_states.dart';
-import '../cubit/firebase_cubits/firestore/firestore_cubit.dart';
 
 
 //TODO: when removing this class don't forget to remove route from 'main.dart'.
@@ -31,16 +26,11 @@ class DebugScreen extends StatelessWidget {
   }
 
   void _showDialog(BuildContext context,
-      {required String text,
-        // required String title
-      }){
-
+      {String? text, Widget? content}){
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        // backgroundColor: Color(0xff1c1a1a),
-        // title:  Text(title),
-        content: Text(text) ,
+        content: content ?? Text(text!) ,
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -86,7 +76,7 @@ class DebugScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Debug'),
       ),
-      body: Column(
+      body: ListView(
         children:  [
           ////Authentication Section
            ExpansionTile(
@@ -133,9 +123,9 @@ class DebugScreen extends StatelessWidget {
                   final password = '123456';
                   final auth = AuthCubit.get(context);
                   Map<String, int> counters = {
-                    cnt1_key: CounterCubit1.get(context).state, cnt2_key: CounterCubit2.get(context).state,
-                    cnt3_key: CounterCubit3.get(context).state, cnt4_key: CounterCubit4.get(context).state,
-                    cnt5_key: CounterCubit5.get(context).state, cnt6_key: CounterCubit6.get(context).state,
+                    cnt1_key: CountersProvider.get(context).cnt1,
+                    cnt2_key: CountersProvider.get(context).cnt2,
+                    cnt3_key: CountersProvider.get(context).cnt3
                   };
                   await auth.createUser(
                       email: email,
@@ -218,6 +208,36 @@ class DebugScreen extends StatelessWidget {
               }).toList(),
               onChanged: (value){},
             ),
+          ),
+          _debugTile(
+            text: 'add counter',
+            onTap: (){
+              _showDialog(context,
+                  content: DropdownButton(
+                    hint: Text('counter name'),
+                    items: [
+                      '${ar['@reports']['@local_report']['@counters'][cnt4_key]}',
+                      '${ar['@reports']['@local_report']['@counters'][cnt5_key]}'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (value){
+                      CountersProvider.get(context, listen: false).addNewCounter(value);
+                    },
+                  ),
+              );
+            },
+          ),
+          _debugTile(
+            text: 'remove last counter',
+            onTap: (){
+              CountersProvider.get(context, listen: false).removeCounter(
+                CountersProvider.get(context, listen: false).countersMap.keys.last
+              );
+            },
           ),
         ],
       ),
