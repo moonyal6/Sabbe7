@@ -1,7 +1,8 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counters_provider.dart';
+import 'package:sabbeh_clone/data/controllers/counters_controller.dart';
 
 import '../../shared/constants/constants.dart';
 import '../../shared/constants/style_constants/text_style_constants.dart';
@@ -11,19 +12,17 @@ import '../cubit/firebase_cubits/auth/auth_states.dart';
 
 
 //TODO: when removing this class don't forget to remove route from 'main.dart'.
-class DebugScreen extends StatelessWidget {
+class DebugScreen extends StatefulWidget {
   const DebugScreen({Key? key}) : super(key: key);
   static String route = 'debug';
 
-  SnackBar _snackBar({required String text, SnackBarAction? action}){
-    return SnackBar(
-      content: Text(text,
-          style: const TextStyle(color: Colors.white)),
-      backgroundColor: Colors.grey.shade900,
-      duration: const Duration(seconds: 2),
-      action: action,
-    );
-  }
+  @override
+  State<DebugScreen> createState() => _DebugScreenState();
+}
+
+class _DebugScreenState extends State<DebugScreen> {
+  String _notificationValue = '15 min';
+
 
   void _showDialog(BuildContext context,
       {String? text, Widget? content}){
@@ -43,11 +42,20 @@ class DebugScreen extends StatelessWidget {
 
   void _showSnackBar(BuildContext context,
       {required String text, String errorMessage = 'Error', bool listen = true}){
+
+    SnackBar snackBar({required String text, SnackBarAction? action}) => SnackBar(
+      content: Text(text,
+          style: const TextStyle(color: Colors.white)),
+      backgroundColor: Colors.grey.shade900,
+      duration: const Duration(seconds: 2),
+      action: action,
+    );
+
     if(listen){
       final authState = AuthCubit.get(context).state;
       if (authState is AuthErrorState) {
         print(authState.errorMessage);
-        ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+        ScaffoldMessenger.of(context).showSnackBar(snackBar(
           text: errorMessage,
           action: SnackBarAction(
             label: 'View Error',
@@ -57,18 +65,17 @@ class DebugScreen extends StatelessWidget {
           ),
         ));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+        ScaffoldMessenger.of(context).showSnackBar(snackBar(
           text: text,
         ));
       }
     }
     else {
-      ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+      ScaffoldMessenger.of(context).showSnackBar(snackBar(
         text: text,
       ));
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -123,9 +130,9 @@ class DebugScreen extends StatelessWidget {
                   final password = '123456';
                   final auth = AuthCubit.get(context);
                   Map<String, int> counters = {
-                    cnt1_key: CountersProvider.get(context).cnt1,
-                    cnt2_key: CountersProvider.get(context).cnt2,
-                    cnt3_key: CountersProvider.get(context).cnt3
+                    cnt1_key: CountersController.get(context).cnt1,
+                    cnt2_key: CountersController.get(context).cnt2,
+                    cnt3_key: CountersController.get(context).cnt3
                   };
                   await auth.createUser(
                       email: email,
@@ -152,19 +159,18 @@ class DebugScreen extends StatelessWidget {
 
               _debugTile(
                 text: 'delete account',
+                enabled: false,
                 onTap: () async{
                   final auth = AuthCubit.get(context);
                   final state = auth.state;
                   if(state is AuthLoggedInState){
                     final uid = state.uId;
-                    auth.deleteUser(uid: uid);
+                    // auth.deleteUser(uid: uid);
                   }
                   else{
                     print('NO USER FOUND!');
                     //todo: call showSnackBar
                   }
-
-
                   //todo: call showSnackBar
                 },
               ),
@@ -174,7 +180,7 @@ class DebugScreen extends StatelessWidget {
       ////Counter Control Section
       ExpansionTile(
         initiallyExpanded: false,
-        title: const Text('counter',
+        title: const Text('counters',
           style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -182,15 +188,16 @@ class DebugScreen extends StatelessWidget {
           ),
         ),
         children: [
-          _debugTile(
-            text: 'rest global counter',
-            enabled: false,
-            onTap: (){
-            //   context.read<FirestoreCubit>().resetGlobalCounter();
-              },
-          ),
+          // _debugTile(
+          //   text: 'rest global counter',
+          //   enabled: false,
+          //   onTap: (){
+          //   //   context.read<FirestoreCubit>().resetGlobalCounter();
+          //     },
+          // ),
           _debugTile(
             text: 'rest counter',
+            enabled: false,
             onTap: (){},
             trailing: DropdownButton(
               hint: Text('counter'),
@@ -225,7 +232,7 @@ class DebugScreen extends StatelessWidget {
                       );
                     }).toList(),
                     onChanged: (value){
-                      CountersProvider.get(context, listen: false).addNewCounter(value);
+                      CountersController.get(context, listen: false).addNewCounter(value);
                     },
                   ),
               );
@@ -234,13 +241,110 @@ class DebugScreen extends StatelessWidget {
           _debugTile(
             text: 'remove last counter',
             onTap: (){
-              CountersProvider.get(context, listen: false).removeCounter(
-                CountersProvider.get(context, listen: false).countersMap.keys.last
+              CountersController.get(context, listen: false).removeCounter(
+                CountersController.get(context, listen: false).countersMap.keys.last
+              );
+            },
+          ),
+          _debugTile(
+            text: 'wipe counter date',
+            onTap: () async{
+              await CountersController.get(context, listen: false).resetCounterData(context);
+              _showSnackBar(context,
+                  text: 'Counter data deleted',
+                  listen: false,
               );
             },
           ),
         ],
       ),
+          ExpansionTile(
+            initiallyExpanded: false,
+            title: const Text('notification',
+              style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
+              ),
+            ),
+            children: [
+              _debugTile(
+                text: 'send notification now',
+                onTap: (){
+                  AwesomeNotifications().createNotification(
+                      content: NotificationContent(
+                          id: 15,
+                          channelKey: 'testing',
+                          title: 'Simple Notification',
+                          body: 'Simple body',
+                          actionType: ActionType.Default
+                      )
+                  );
+                },
+              ),
+              _debugTile(
+                text: 'schedule notification',
+                // enabled: false,
+                onTap: ()async{
+                  String localTimeZone = await AwesomeNotifications().getLocalTimeZoneIdentifier();
+
+                  await AwesomeNotifications().createNotification(
+                      content: NotificationContent(
+                          id: 15,
+                          channelKey: 'testing',
+                          title: 'Notification at every single minute',
+                          body:
+                          ' minute.',
+                          notificationLayout: NotificationLayout.BigPicture,
+                          bigPicture: 'asset://assets/images/melted-clock.png',
+                          category: NotificationCategory.Reminder),
+                      schedule: NotificationCalendar(
+                        minute: 1,
+                        // second: 20,
+                        repeats: true,
+                        // allowWhileIdle: true
+                      ));
+                },
+                trailing:
+                DropdownButton(
+                  value: _notificationValue,
+                  items: [
+                    '15 min',
+                    // '2'
+                  ].map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _notificationValue = newValue!;
+                    });
+                  },
+                ),
+                // DropdownButton(
+                //   // value: _notificationValue,
+                //   hint: Text('repeat every'),
+                //   items: [
+                //     '15min',
+                //     // "30min",
+                //     // "1h",
+                //     "3h",
+                //   ].map((value) {
+                //     return DropdownMenuItem(
+                //       child: Text('every $value'),
+                //     );
+                //   }).toList(),
+                //   onChanged: (value){
+                //     setState(() {
+                //       _notificationValue = value!;
+                //     });
+                //   },
+                // ),
+              ),
+            ],
+          ),
       //
       //     ////Prints Section.
       //     ExpansionTile(
@@ -281,10 +385,11 @@ class _debugTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       enabled: enabled,
+      textColor: enabled? Colors.white: Colors.grey,
       title: Text(text,
           style: kDrawerTiles
       ),
-      onTap: onTap,
+      onTap: enabled? onTap: null,
       trailing: trailing,
     );
   }

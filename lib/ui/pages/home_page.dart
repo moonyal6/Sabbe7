@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sabbeh_clone/ui/cubit/firebase_cubits/auth/auth_cubit.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../components/counter_page/counter_page.dart';
 import '../components/counter_page/counter_pages_drawer.dart';
-import '../cubit/counters_cubits/counters_provider.dart';
+import '../../data/controllers/counters_controller.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -18,18 +19,20 @@ class _HomePageState extends State<HomePage> {
   final innerController = PageController(viewportFraction: 0.8, keepPage: true);
   final controller = PageController(viewportFraction: 0.8, keepPage: true);
 
+
   @override
   void initState() {
     // TODO: implement initState
 
     super.initState();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
     AuthCubit.get(context).getUserData(uId: AuthCubit.get(context).currentUser?.id);
     // print(getCounterPages());
   }
 
   List<Widget> getCounterPages(){
     List<Widget> countersPagesList = [];
-    for (String counter in CountersProvider.get(context).countersMap.keys){
+    for (String counter in CountersController.get(context).countersMap.keys){
       countersPagesList.add(
         CounterPage(
           counterKey: counter,
@@ -40,67 +43,44 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  List<Widget> getCounterPagesADD(){
-    List<Widget> countersPagesList = [];
-    for (String counter in CountersProvider.get(context).countersMap.keys){
-      countersPagesList.add(
-          CounterPage(
-            counterKey: counter,
-          )
-      );
-    }
-    return countersPagesList;
-  }
 
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
-      controller: controller,
-      children: [
-        Center(
-          child: ElevatedButton(
-            child: Text('Add Counter'),
-            onPressed: (){},
-          ),
+    return DefaultTabController(
+      length: getCounterPages().length,
+      child: Scaffold(
+        drawerEnableOpenDragGesture: false,
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Colors.white),
+          backgroundColor: Colors.black,
         ),
-        DefaultTabController(
-          length: getCounterPages().length,
-          child: Scaffold(
-            drawerEnableOpenDragGesture: false,
-            appBar: AppBar(
-              iconTheme: IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black,
+        drawer: CounterPageDrawer(),
+        backgroundColor: Colors.black,
+        body: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            PageView(
+              // padEnds: false,
+              controller: innerController,
+              children: getCounterPages(),
             ),
-            drawer: CounterPageDrawer(),
-            backgroundColor: Colors.black,
-            body: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                PageView(
-                  // padEnds: false,
-                  controller: innerController,
-                  children: getCounterPages(),
+            Positioned(
+              bottom: 75,
+              child: SmoothPageIndicator(
+                controller: innerController,
+
+                count: getCounterPages().length,
+                effect: WormEffect(
+                  activeDotColor: Colors.white,
+                  dotHeight: 10,
+                  dotWidth: 10,
                 ),
-                Positioned(
-                  bottom: 75,
-                  child: SmoothPageIndicator(
-                    controller: innerController,
-
-                    count: getCounterPages().length,
-                    effect: WormEffect(
-                      activeDotColor: Colors.white,
-                      dotHeight: 10,
-                      dotWidth: 10,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
+              ),
+            )
+          ],
         ),
-
-      ],
+      ),
     );
   }
 }
