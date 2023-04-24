@@ -36,6 +36,8 @@ dependencies:
   url_launcher: ^6.1.10
   flutter_native_splash: ^2.2.16
   language_builder: ^0.1.2
+  awesome_notifications: ^0.7.4+1
+
 #  restart_app: ^1.1.0
 #  get: ^4.6.5
 

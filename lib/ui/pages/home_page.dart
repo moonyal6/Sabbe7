@@ -55,15 +55,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
-      controller: controller,
-      children: [
-        Center(
-          child: ElevatedButton(
-            child: Text('Add Counter'),
-            onPressed: (){},
-          ),
-        ),
+    return
+      // PageView(
+      // controller: controller,
+      // children: [
+        // Center(
+        //   child: ElevatedButton(
+        //     child: Text('Add Counter'),
+        //     onPressed: (){},
+        //   ),
+        // ),
         DefaultTabController(
           length: getCounterPages().length,
           child: Scaffold(
@@ -98,9 +99,9 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-        ),
+        // ),
 
-      ],
+    //   ],
     );
   }
 }
