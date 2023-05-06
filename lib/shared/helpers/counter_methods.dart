@@ -18,11 +18,11 @@ void counterMethods(BuildContext context, int count){
   bool soundState = context.read<SoundCubit>().state;
   bool vibrateState = context.read<VibrationCubit>().state;
 
-  if (count % 1000 == 0){
+  if (count % 1000 == 0 && count > 0){
     if(soundState)playSound(methType.heavy);
     if(vibrateState)vibrate(methType.heavy);
   }
-  else if (count % 100 == 0){
+  else if (count % 100 == 0 && count > 0){
     if(soundState)playSound(methType.light);
     if(vibrateState)vibrate(methType.light);
   }

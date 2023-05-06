@@ -5,16 +5,17 @@ import 'package:language_builder/language_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 
-import '../../../shared/constants/constants.dart';
-import '../../../shared/helpers/counter_methods.dart';
-import '../firebase_cubits/auth/auth_cubit.dart';
-import '../firebase_cubits/auth/auth_states.dart';
-import '../firebase_cubits/firestore/firestore_cubit.dart';
+import '../../shared/constants/constants.dart';
+import '../../shared/helpers/counter_methods.dart';
+import '../../ui/cubit/firebase_cubits/auth/auth_cubit.dart';
+import '../../ui/cubit/firebase_cubits/auth/auth_states.dart';
+import '../../ui/cubit/firebase_cubits/firestore_cubit.dart';
 
-class CountersProvider extends ChangeNotifier{
 
-  static CountersProvider get(context, {bool listen = true}) =>
-      Provider.of<CountersProvider>(context, listen: listen);
+class CountersController extends ChangeNotifier{
+
+  static CountersController get(context, {bool listen = true}) =>
+      Provider.of<CountersController>(context, listen: listen);
 
   //todo: secure [_countersData] by methods
   Map<String, dynamic> _countersData = CacheHelper.getString(key: 'counters') != ''
@@ -41,29 +42,46 @@ class CountersProvider extends ChangeNotifier{
   Map<String, dynamic> get countersMap => _countersData;
 
 
-  void increment(BuildContext context, {
-    required String counterKey}) async{
+  Future<void> increment(BuildContext context, {
+    required String counterKey, int count = 1, bool notify = true}) async
+  {
     final firestore = FirestoreCubit.get(context);
     final authState = AuthCubit.get(context).state;
 
-    _countersData[counterKey]!['count']++;
-    notifyListeners();
-    final count = _countersData[counterKey]!['count'];
-    print(count);
 
-    counterMethods(context, count);
+    _countersData[counterKey]!['count'] = _countersData[counterKey]!['count'] + count;
+    notify? notifyListeners(): print('not notifying listeners');
+    final newCount = _countersData[counterKey]!['count'];
+    print(newCount);
+
+    counterMethods(context, newCount);
     await CacheHelper.saveData(key: 'counters', value: jsonEncode(_countersData));
-    print('length ${countersMap.length}');
-
 
     if(authState is AuthLoggedInState) {
       String uid = authState.uId;
       // firestore.addCountGlobal({counterKey: 1});
       firestore.addUserCount(
           uid: uid,
-          counterKey: counterKey
+          counterKey: counterKey,
+          count: count
       );
     }
+  }
+
+
+  Future<void> backgroundIncrement(BuildContext context) async
+  {
+    print('background adding');
+    int backgroundCount = await CacheHelper.getInteger(key: 'background_adding');
+    for(var key in _countersData.keys) {
+      await increment(context,
+        counterKey: key,
+        count: backgroundCount,
+        notify: true,
+      );
+    }
+    // notifyListeners();
+    // CacheHelper.removeData(key: 'background_adding');
   }
 
 
@@ -94,4 +112,16 @@ class CountersProvider extends ChangeNotifier{
       print('at least 3 counters');
     }
   }
+
+  Future<void> updateCountersNames() async{
+    print('updating counters lang to ${LanguageBuilder.getCurrentLang()}');
+    _countersData[cnt1_key]['name'] = LanguageBuilder
+        .texts!['@reports']['@local_report']['@counters'][cnt1_key];
+    _countersData[cnt2_key]['name'] = LanguageBuilder
+        .texts!['@reports']['@local_report']['@counters'][cnt2_key];
+    _countersData[cnt3_key]['name'] = LanguageBuilder
+        .texts!['@reports']['@local_report']['@counters'][cnt3_key];
+    await CacheHelper.saveData(key: 'counters', value: jsonEncode(_countersData));
+  }
+
 }

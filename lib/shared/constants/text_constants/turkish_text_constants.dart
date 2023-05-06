@@ -45,11 +45,22 @@ const Map<String, dynamic> tr = {
   },
   '@settings_page': {
       'title': 'Ayarlar',
+    '@titles': {
+      'general': "Genel",
+      'notifications': 'Bildirimler',
+    },
     '@tiles': {
       'vibration': 'Titreşim',
       'sound': 'Ses',
       'language': 'Dil',
+      'enable_notifications': 'Bildirim Gönder',
+      'count_number': 'Bildirim başına sayım',
+      'notification_delay': 'Bildirim Zamanlaması',
     },
+    '@drop_downs': {
+      'minute': 'dk',
+      'hour': 's',
+    }
   },
   '@account_management_page': {
     'title': 'Hesabım',
@@ -73,11 +84,19 @@ const Map<String, dynamic> tr = {
         cnt1_key: 'Sübhanallah',
         cnt2_key: 'Elhamdülillah',
         cnt3_key: 'Allahu Ekber',
-        cnt4_key: 'La İlahe İllallah',
-        cnt5_key: 'Estağfirullah',
-        cnt6_key: 'S.A.V.'
+        // cnt4_key: 'La İlahe İllallah',
+        // cnt5_key: 'Estağfirullah',
+        // cnt6_key: 'S.A.V.'
       },
     },
+  },
+  '@notification': {
+    'title': "Tesbih vakti geldi!",
+    'content': "Hatırlatmanız:",
+    '@buttons': {
+      'add': "Ekle",
+      'dismiss': "İptal",
+    }
   },
 };
 

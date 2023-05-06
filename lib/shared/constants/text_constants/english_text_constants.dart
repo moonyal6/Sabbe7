@@ -46,10 +46,21 @@ const Map<String, dynamic> en =
   },
   '@settings_page': {
     'title': 'Settings',
+    '@titles': {
+      'general': "General",
+      'notifications': 'Notifications',
+    },
     '@tiles': {
       'vibration': 'Vibration',
       'sound': 'Sound',
       'language': 'Language',
+      'enable_notifications': 'Send Notifications',
+      'count_number': 'Count per notification',
+      'notification_delay': 'Notification Timing',
+    },
+    '@drop_downs': {
+      'minute': 'min',
+      'hour': 'h',
     }
   },
   '@account_management_page': {
@@ -74,11 +85,19 @@ const Map<String, dynamic> en =
         cnt1_key: 'Subhanallah',
         cnt2_key: 'Alhamdulillah',
         cnt3_key: 'Allahu Akbar',
-        cnt4_key: 'La ilaha illallah',
-        cnt5_key: 'Astaghfirullah',
-        cnt6_key: 'S.A.W.'
+        // cnt4_key: 'La ilaha illallah',
+        // cnt5_key: 'Astaghfirullah',
+        // cnt6_key: 'S.A.W.'
       },
     },
+  },
+  '@notification': {
+    'title': "It's time for tasbeeh!",
+    'content': "Your reminder:",
+    '@buttons': {
+      'add': "Add",
+      'dismiss': "Dismiss",
+    }
   },
 };
 

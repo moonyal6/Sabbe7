@@ -8,9 +8,11 @@ import 'constants/text_constants/turkish_text_constants.dart';
 class Languages {
 
   static Map<String, String> languages = {
-    "tr": jsonEncode(tr),
-    "en": jsonEncode(en),
-    "ar": jsonEncode(ar),
-    // "Türkçe": jsonEncode(tr),
+    "العربية": jsonEncode(ar),
+    "Türkçe": jsonEncode(tr),
+    "English": jsonEncode(en),
+    // "tr": jsonEncode(tr),
+    // "en": jsonEncode(en),
+    // "ar": jsonEncode(ar),
   };
 }

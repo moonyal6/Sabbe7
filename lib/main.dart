@@ -1,5 +1,8 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:language_builder/language_builder.dart';
+import 'package:sabbeh_clone/shared/helpers/background_helper.dart';
+import 'package:sabbeh_clone/shared/helpers/notice_helper.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -8,20 +11,23 @@ import 'package:sabbeh_clone/shared/Languages.dart';
 import 'package:sabbeh_clone/ui/pages/authentication/sign_in_page.dart';
 import 'package:sabbeh_clone/ui/pages/authentication/sign_up_page.dart';
 import 'package:sabbeh_clone/ui/pages/authentication/user_management_page.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counters_provider.dart';
+import 'package:sabbeh_clone/data/controllers/counters_controller.dart';
+import 'package:sabbeh_clone/data/controllers/notification_controller.dart';
+import 'package:sabbeh_clone/data/controllers/settings_controller.dart';
 import 'package:sabbeh_clone/ui/cubit/firebase_cubits/auth/auth_cubit.dart';
-import 'package:sabbeh_clone/ui/cubit/firebase_cubits/firestore/firestore_cubit.dart';
+import 'package:sabbeh_clone/ui/cubit/firebase_cubits/firestore_cubit.dart';
 import 'package:sabbeh_clone/ui/cubit/settings_cubits/sound_cubit.dart';
 import 'package:sabbeh_clone/ui/cubit/settings_cubits/vibration_cubit.dart';
 import 'package:sabbeh_clone/ui/pages/home_page.dart';
 import 'package:sabbeh_clone/ui/pages/debug_screen.dart';
 import 'package:sabbeh_clone/ui/pages/reports/global_report_screen.dart';
 import 'package:sabbeh_clone/ui/pages/reports/personal_report.dart';
+
+
 import 'package:sabbeh_clone/ui/pages/settings_page.dart';
-
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 void main() async {
@@ -29,15 +35,23 @@ void main() async {
 
   await CacheHelper.init();
 
+  // await NoticeHelper.initNotification();
+  await NotificationController.initializeLocalNotifications();
+  await NotificationController.initializeIsolateReceivePort();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   runApp(SabbehApp());
+  // BackgroundFetch.registerHeadlessTask(BackgroundHelper.backgroundFetchHeadlessTask);
 }
 
 class SabbehApp extends StatelessWidget {
   SabbehApp({Key? key}) : super(key: key);
+
+  static final GlobalKey<NavigatorState> navigatorKey =
+  GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +71,24 @@ class SabbehApp extends StatelessWidget {
         ),
       ],
       child: LanguageBuilder(
-        defaultLanguage: 'en',
+        defaultLanguage: 'English',
         textsMap: Languages.languages,
-        child: ChangeNotifierProvider(
-          create: (_) => CountersProvider(),
-          child: MaterialApp(
+        child:
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (_) => CountersController(),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => SettingsController(),
+            ),
+          ],
+    child:
+          MaterialApp(
             theme: ThemeData.dark(),
             debugShowCheckedModeBanner: true,
             routes: {
+              InitClass.route : (context) => InitClass(),
               HomePage.route : (context) => HomePage(),
               SettingsPage.route : (context) => SettingsPage(),
               PersonalReportScreen.route : (context) => PersonalReportScreen(),
@@ -74,7 +98,7 @@ class SabbehApp extends StatelessWidget {
               GlobalReportScreen.route : (context) => GlobalReportScreen(),
               UserManagementScreen.route : (context) => UserManagementScreen(),
             },
-            initialRoute: HomePage.route,
+            initialRoute: InitClass.route,
             builder: (context, child) {
               return ScrollConfiguration(behavior: AppScrollBehavior(), child: child!);
             },
@@ -85,6 +109,42 @@ class SabbehApp extends StatelessWidget {
   }
 }
 
+  
+class InitClass extends StatefulWidget {
+  const InitClass({Key? key}) : super(key: key);
+  static String route = 'init';
+  @override
+  State<InitClass> createState() => _InitClassState();
+}
+
+class _InitClassState extends State<InitClass> {
+  
+  @override
+  void initState() {
+    super.initState();
+    asyncInit();
+  }
+
+  asyncInit() async{
+    await CountersController.get(context, listen: false).backgroundIncrement(context);
+
+
+    await NotificationController.cancelNotifications();
+    await CountersController.get(context, listen: false)
+        .updateCountersNames();
+    SettingsController.get(context, listen: false).notifications
+        ? NotificationController.scheduleNewNotification() : null;
+    Navigator.popAndPushNamed(context, HomePage.route);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(color: Colors.black);
+  }
+}
+
+
+
 
 class AppScrollBehavior extends ScrollBehavior{
   @override
@@ -93,3 +153,9 @@ class AppScrollBehavior extends ScrollBehavior{
     return child;
   }
 }
+
+
+
+
+
+

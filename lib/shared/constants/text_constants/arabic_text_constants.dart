@@ -45,10 +45,21 @@ const Map<String, dynamic> ar = {
   },
   '@settings_page': {
     'title': 'الإعدادات',//
+    '@titles': {
+      'general': "عام",
+      'notifications': 'الإشعارات',
+    },
     '@tiles': {
       'vibration': "الإهتزاز",//
       'sound': 'الصوت',
       'language': "اللغة",
+      'enable_notifications': 'إرسال الإشعارات',
+      'count_number': 'العدد لكل إشعار',
+      'notification_delay': 'توقيت الإشعارات',
+    },
+    '@drop_downs': {
+      'minute': 'د',
+      'hour': 'س',
     }
   },
   '@account_management_page': {
@@ -73,11 +84,19 @@ const Map<String, dynamic> ar = {
         cnt1_key: 'سبحان الله',
         cnt2_key: 'الحمد لله',
         cnt3_key: 'الله أكبر',
-        cnt4_key: 'لا اله الا الله',
-        cnt5_key: 'استغفر الله',
-        cnt6_key: 'ﷺ'
+        // cnt4_key: 'لا اله الا الله',
+        // cnt5_key: 'استغفر الله',
+        // cnt6_key: 'ﷺ'
       },
     },
+  },
+  '@notification': {
+    'title': "حان وقت التسبيح!",
+    'content': "تذكيرك:",
+    '@buttons': {
+      'add': "إضافة",
+      'dismiss': "تجاهل",
+    }
   },
 };
 

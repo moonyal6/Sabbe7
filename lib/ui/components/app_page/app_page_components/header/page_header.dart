@@ -12,7 +12,7 @@ class PageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: bottomPadding ?? 50.0),
+      padding: EdgeInsets.only(bottom: bottomPadding ?? 48.0),
       child: Row(
         children: [
           HeaderBackButton(),

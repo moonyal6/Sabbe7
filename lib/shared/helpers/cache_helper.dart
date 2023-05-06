@@ -19,33 +19,39 @@ class CacheHelper
 
   static String getString({required String key})
   {
-    final data = sharedPreferences.getString(key) ?? '';
-    print('SharedPref reading $key: $data');
-    return data;
+    final value = sharedPreferences.getString(key) ?? '';
+    print('SharedPref reading $key: $value');
+    return value;
   }
 
 
-  static int getInteger({required String key})
+  static int getInteger({required String key,
+    bool dPrint = false})
   {
-    return  sharedPreferences.getInt(key) ?? 0;
+    final value = sharedPreferences.getInt(key) ?? 0;
+    print('SharedPref reading $key: $value');
+    return value;
   }
 
 
-  static bool getBool({required String key})
+  static bool getBool({required String key,
+    bool dPrint = false})
   {
     return  sharedPreferences.getBool(key) ?? true;
   }
 
 
-  static List<String> getStringList({required String key})
+  static List<String> getStringList({required String key,
+    bool dPrint = false})
   {
     return  sharedPreferences.getStringList(key) ?? [];
   }
 
 
-  static Future<bool> saveData({required String key, required dynamic value}) async
+  static Future<bool> saveData({required String key, required dynamic value,
+    bool dPrint = false}) async
   {
-    print('SharedPref to writing $key: $value');
+    dPrint ?print('SharedPref to writing $key: $value'): null;
      if(value is String) {
        return await sharedPreferences.setString(key, value);
      } else if(value is bool) {
@@ -63,7 +69,7 @@ class CacheHelper
   }
 
 
-  static Future<bool> removeData({required String key,}) async
+  static Future<bool> removeData({required String key}) async
   {
     return await sharedPreferences.remove(key);
   }

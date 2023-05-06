@@ -13,7 +13,10 @@ class SettingsTile extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       title: Text(title,
-        style: TextStyle(fontSize: 18),
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w300
+        ),
       ),
       leading: Icon(icon,
         size: 30,

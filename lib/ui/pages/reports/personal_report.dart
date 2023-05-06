@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:language_builder/language_builder.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counters_provider.dart';
+import 'package:sabbeh_clone/data/controllers/counters_controller.dart';
 
 import '../../components/app_page/app_page.dart';
 import '../../components/app_page/app_page_components/card/card_components/card_report_tile.dart';
@@ -16,7 +16,7 @@ class PersonalReportScreen extends StatelessWidget {
 
     List<Widget> getCounters(){
       List<Widget> counterList = [];
-      for(Map counter in CountersProvider.get(context, listen: false).countersMap.values){
+      for(Map counter in CountersController.get(context, listen: false).countersMap.values){
         counterList.add(
             CardReportTile(
               counterText: counter['name'],

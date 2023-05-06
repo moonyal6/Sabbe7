@@ -23,7 +23,7 @@ todo:
 */
 //
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
-import 'package:sabbeh_clone/ui/cubit/firebase_cubits/firestore/firestore_cubit.dart';
+import 'package:sabbeh_clone/ui/cubit/firebase_cubits/firestore_cubit.dart';
 
 import '../../../../data/models/user_model.dart';
 import 'auth_states.dart';

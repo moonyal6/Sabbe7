@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.sabbeh_clone">
-    <uses-permission
-        android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+<!--    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>-->
+<!--    <uses-permission android:name="android.permission.WAKE_LOCK" />-->
     <queries>
         <!-- If your app checks for SMS support -->
         <intent>
@@ -19,6 +21,7 @@
         </intent>
     </queries>
     <application
+        tools:replace="android:label"
         android:label="sabbeh"
         android:name="${applicationName}"
         android:icon="@mipmap/sabbeh_icon">

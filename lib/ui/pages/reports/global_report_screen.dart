@@ -8,7 +8,7 @@ import '../../components/app_page/app_page.dart';
 import '../../components/app_page/app_page_components/card/card_components/card_report_tile.dart';
 import '../../components/app_page/app_page_components/card/page_card.dart';
 import '../../components/app_page/app_page_components/header/page_header.dart';
-import '../../cubit/firebase_cubits/firestore/firestore_cubit.dart';
+import '../../cubit/firebase_cubits/firestore_cubit.dart';
 
 
 

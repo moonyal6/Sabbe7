@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/counters_provider.dart';
+import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
+import 'package:sabbeh_clone/shared/helpers/notice_helper.dart';
+import 'package:sabbeh_clone/data/controllers/counters_controller.dart';
 
+import '../../data/controllers/notification_controller.dart';
 import '../../shared/constants/constants.dart';
 import '../../shared/constants/style_constants/text_style_constants.dart';
 import '../../shared/constants/text_constants/arabic_text_constants.dart';
@@ -11,9 +14,19 @@ import '../cubit/firebase_cubits/auth/auth_states.dart';
 
 
 //TODO: when removing this class don't forget to remove route from 'main.dart'.
-class DebugScreen extends StatelessWidget {
-  const DebugScreen({Key? key}) : super(key: key);
+class DebugScreen extends StatefulWidget {
+  DebugScreen({Key? key}) : super(key: key);
   static String route = 'debug';
+
+  @override
+  State<DebugScreen> createState() => _DebugScreenState();
+}
+
+class _DebugScreenState extends State<DebugScreen> {
+  String noticeCountKey = cnt1_key;
+  int noticeCountNum = 10;
+  int noticeInterval = CacheHelper.getInteger(key: 'notice_delay') != 0
+      ? CacheHelper.getInteger(key: 'notice_delay') : 1800;
 
   SnackBar _snackBar({required String text, SnackBarAction? action}){
     return SnackBar(
@@ -69,18 +82,18 @@ class DebugScreen extends StatelessWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Debug'),
+
       ),
       body: ListView(
         children:  [
           ////Authentication Section
            ExpansionTile(
-             initiallyExpanded: true,
+             initiallyExpanded: false,
             title: const Text('authentication',
               style: TextStyle(
                   fontSize: 22,
@@ -123,9 +136,9 @@ class DebugScreen extends StatelessWidget {
                   final password = '123456';
                   final auth = AuthCubit.get(context);
                   Map<String, int> counters = {
-                    cnt1_key: CountersProvider.get(context).cnt1,
-                    cnt2_key: CountersProvider.get(context).cnt2,
-                    cnt3_key: CountersProvider.get(context).cnt3
+                    cnt1_key: CountersController.get(context).cnt1,
+                    cnt2_key: CountersController.get(context).cnt2,
+                    cnt3_key: CountersController.get(context).cnt3
                   };
                   await auth.createUser(
                       email: email,
@@ -225,7 +238,7 @@ class DebugScreen extends StatelessWidget {
                       );
                     }).toList(),
                     onChanged: (value){
-                      CountersProvider.get(context, listen: false).addNewCounter(value);
+                      CountersController.get(context, listen: false).addNewCounter(value);
                     },
                   ),
               );
@@ -234,11 +247,128 @@ class DebugScreen extends StatelessWidget {
           _debugTile(
             text: 'remove last counter',
             onTap: (){
-              CountersProvider.get(context, listen: false).removeCounter(
-                CountersProvider.get(context, listen: false).countersMap.keys.last
+              CountersController.get(context, listen: false).removeCounter(
+                CountersController.get(context, listen: false).countersMap.keys.last
               );
             },
           ),
+        ],
+      ),
+      ExpansionTile(
+        initiallyExpanded: true,
+        title: const Text('notifications',
+          style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+          ),
+        ),
+        children: [
+          _debugTile(
+            text: 'send notification',
+            onTap: (){
+             // NoticeHelper.createTestNotification();
+              NotificationController.createNewNotification();
+            }),
+          _debugTile(
+            enabled: true,
+            text: 'repeating notification every',
+            onTap: (){
+              showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => StatefulBuilder(
+                    builder: (context, setState) {
+                      return AlertDialog(
+                        content: Container(
+                          child: Column(
+                            children: [
+                              // ListTile(
+                              //   title: Text('counter name'),
+                              //   trailing: DropdownButton(
+                              //     value: noticeCountKey,
+                              //     items: CountersProvider.get(context, listen: false).countersMap.keys
+                              //         .map<DropdownMenuItem<String>>((String value) {
+                              //       return DropdownMenuItem<String>(
+                              //         value: value,
+                              //         child: Text(value),
+                              //       );
+                              //     }).toList(),
+                              //     onChanged: (value){
+                              //       setState(() {
+                              //         noticeCountKey = value!;
+                              //       });
+                              //       String counterName = CountersProvider.get(context, listen: false)
+                              //           .countersMap[value]['name'];
+                              //       CacheHelper.saveData(key: 'notice_counter_key', value: counterName);
+                              //     },
+                              //   ),
+                              // ),
+                              ListTile(
+                                title: Text('count num'),
+                                trailing: DropdownButton(
+                                  value: noticeCountNum,
+                                  items: [3, 5, 10]
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                    return DropdownMenuItem<int>(
+                                      value: value,
+                                      child: Text(value.toString()),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value){
+                                    setState(() {
+                                      noticeCountNum = value!;
+                                    });
+                                    CacheHelper.saveData(key: "notice_count", value: value);
+                                  },
+                                ),
+                              ),
+                              ListTile(
+                                title: Text('notification delay'),
+                                trailing: DropdownButton(
+                                  value: noticeInterval,
+                                  items: [
+                                    DropdownMenuItem(child: Text('15 min'), value: 900),
+                                    DropdownMenuItem(child: Text('30 min'), value: 1800),
+                                    DropdownMenuItem(child: Text('1 h'), value: 3600),
+                                    DropdownMenuItem(child: Text('3 h'), value: 10800),
+                                  ],
+                                  onChanged: (value){
+                                    // setState(() {
+                                      noticeInterval = value!;
+                                    // });
+                                    NotificationController.changeInterval(noticeInterval);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    }
+                ),
+              );
+              // NotificationController.scheduleNewNotification();
+            },
+            trailing: ElevatedButton(
+              child:Text('Send'),
+              onPressed: (){
+                NotificationController.scheduleNewNotification();
+              },
+            ),
+          ),
+          _debugTile(
+            text: 'stop all notification',
+            onTap: () {
+              NotificationController.cancelNotifications();
+            },
+          ),
+          // _debugTile(text: 'isTimeOut = ${CacheHelper.getBool(key: 'timeout')}')
         ],
       ),
       //

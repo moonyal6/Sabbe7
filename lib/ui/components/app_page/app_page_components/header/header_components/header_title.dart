@@ -12,8 +12,8 @@ class HeaderTitle extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w500
+            fontSize: 30,
+            fontWeight: FontWeight.w600
         ),
       ),
     );

@@ -5,8 +5,6 @@ import 'package:sabbeh_clone/data/api/firestore_api.dart';
 import 'package:sabbeh_clone/shared/constants/constants.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 
-import 'firestore_states.dart';
-
 
 const exampleRef = 'counters/sample@mail.com';
 
@@ -24,8 +22,8 @@ todo:
 
  */
 
-class FirestoreCubit extends Cubit<FirestoreStates>{
-  FirestoreCubit(): super(FirestoreInitialState());
+class FirestoreCubit extends Cubit<int>{
+  FirestoreCubit(): super(0);
 
   static FirestoreCubit get(context) => BlocProvider.of(context);
 
@@ -87,13 +85,13 @@ class FirestoreCubit extends Cubit<FirestoreStates>{
     return _firestoreApi.getDoc(docRef: _userCounterCollection(uid));
   }
 
-  void addUserCount({required String uid, required String counterKey}){
+  void addUserCount({required String uid, required String counterKey, required int count}){
     _firestoreApi.getDoc(docRef: _userCounterCollection(uid)).then((value) {
       final result = value.data() as Map<String, dynamic>;
       try{
         _firestoreApi.updateDoc(
             docRef: _userCounterCollection(uid),
-            fields: {counterKey: result[counterKey] + 1});
+            fields: {counterKey: result[counterKey] + count});
       }
       catch(e){
         print('field not found');

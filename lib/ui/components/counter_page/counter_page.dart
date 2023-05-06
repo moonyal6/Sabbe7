@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:language_builder/language_builder.dart';
-import '../../cubit/counters_cubits/counters_provider.dart';
+import '../../../data/controllers/counters_controller.dart';
 import '../../../shared/constants/style_constants/images_constants.dart';
 import '../../../shared/constants/style_constants/text_style_constants.dart';
 import '../../../shared/constants/text_constants/arabic_text_constants.dart';
@@ -20,7 +20,7 @@ class CounterPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Container(
         child: SabbehButton(() {
-          CountersProvider.get(context, listen: false)
+          CountersController.get(context, listen: false)
               .increment(context, counterKey: counterKey);
         },
           child: Column(
@@ -37,7 +37,8 @@ class CounterPage extends StatelessWidget {
                       Text(ar['@reports']['@local_report']['@counters'][counterKey],
                         style: kCounterName,
                       ),
-                      Text(CountersProvider.get(context).countersMap[counterKey]['name'],
+                      Text(LanguageBuilder.getCurrentLang() == 'العربية' ? ''
+                          :CountersController.get(context).countersMap[counterKey]['name'],
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
@@ -47,7 +48,8 @@ class CounterPage extends StatelessWidget {
                       SizedBox(height: 20),
                     ],
                   ),
-                  Text(CountersProvider.get(context).countersMap[counterKey]['count'].toString(),
+                  Text(CountersController.get(context)
+                      .countersMap[counterKey]['count'].toString(),
                     style: const TextStyle(
                       fontSize: 50,
                       color: Colors.white,
