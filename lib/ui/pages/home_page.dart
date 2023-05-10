@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sabbeh_clone/ui/cubit/firebase_cubits/auth/auth_cubit.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../components/counter_page/counter_page.dart';
 import '../components/counter_page/counter_pages_drawer.dart';
-import 'counters/counter_page1.dart';
-import 'counters/counter_page2.dart';
-import 'counters/counter_page3.dart';
-import 'counters/counter_page4.dart';
-import 'counters/counter_page5.dart';
-import 'counters/counter_page6.dart';
+import '../../data/controllers/counters_controller.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,20 +16,39 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final innerController = PageController(viewportFraction: 0.8, keepPage: true);
   final controller = PageController(viewportFraction: 0.8, keepPage: true);
+
 
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
     AuthCubit.get(context).getUserData(uId: AuthCubit.get(context).currentUser?.id);
+    // print(getCounterPages());
   }
+
+  List<Widget> getCounterPages(){
+    List<Widget> countersPagesList = [];
+    for (String counter in CountersController.get(context).countersMap.keys){
+      countersPagesList.add(
+        CounterPage(
+          counterKey: counter,
+        )
+      );
+    }
+    return countersPagesList;
+  }
+
+
 
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: getCounterPages().length,
       child: Scaffold(
         drawerEnableOpenDragGesture: false,
         appBar: AppBar(
@@ -40,55 +57,29 @@ class _HomePageState extends State<HomePage> {
         ),
         drawer: CounterPageDrawer(),
         backgroundColor: Colors.black,
-        body:
-            Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                PageView(
-                  // padEnds: false,
-                  controller: controller,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: CounterPage1(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: CounterPage2(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: CounterPage3(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: CounterPage4(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: CounterPage5(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: CounterPage6(),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  bottom: 75,
-                  child: SmoothPageIndicator(
-                      controller: controller,
-                      count: 6,
-                      effect: WormEffect(
-                        activeDotColor: Colors.white,
-                        dotHeight: 10,
-                        dotWidth: 10,
-                      ),
-                    ),
-                )
-              ],
+        body: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            PageView(
+              // padEnds: false,
+              controller: innerController,
+              children: getCounterPages(),
             ),
+            Positioned(
+              bottom: 75,
+              child: SmoothPageIndicator(
+                controller: innerController,
 
+                count: getCounterPages().length,
+                effect: WormEffect(
+                  activeDotColor: Colors.white,
+                  dotHeight: 10,
+                  dotWidth: 10,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

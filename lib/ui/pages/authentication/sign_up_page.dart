@@ -4,15 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:language_builder/language_builder.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sabbeh_clone/shared/constants/constants.dart';
-import 'package:sabbeh_clone/ui/cubit/counters_cubits/default_counters_cubits/counter_cubit1.dart';
 import 'package:sabbeh_clone/ui/pages/authentication/sign_in_page.dart';
-import '../../components/app_page/app_page_components/dialogs/error_dialog.dart';
+import '../../components/app_page/app_page_components/dialogs/page_dialog.dart';
 import '../../components/app_page/app_page_components/text_fields.dart';
-import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit2.dart';
-import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit3.dart';
-import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit4.dart';
-import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit5.dart';
-import '../../cubit/counters_cubits/default_counters_cubits/counter_cubit6.dart';
+import '../../../data/controllers/counters_controller.dart';
 import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../../cubit/firebase_cubits/auth/auth_states.dart';
 
@@ -87,14 +82,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             child: Text(_pageText['sign_up']),
                             textColor: Colors.black,
                             onPressed: () async{
-                              Map<String, int> counters = {
-                                cnt1_key: CounterCubit1.get(context).state,
-                                cnt2_key: CounterCubit2.get(context).state,
-                                cnt3_key: CounterCubit3.get(context).state,
-                                cnt4_key: CounterCubit4.get(context).state,
-                                cnt5_key: CounterCubit5.get(context).state,
-                                cnt6_key: CounterCubit6.get(context).state,
+                              Map<String, int> counters = //CountersProvider.get(context).countersMap;
+                              {
+                                cnt1_key: CountersController.get(context).cnt1,
+                                cnt2_key: CountersController.get(context).cnt2,
+                                cnt3_key: CountersController.get(context).cnt3,
                               };
+
                               AuthCubit.get(context)
                                   .createUser(
                                     email: _email,
@@ -115,7 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             setState(() {
                               showSpinner = false;
                             });
-                            showErrorDialog(context);
+                            PageDialog.showErrorDialog(context);
                           }
                           else if (state is AuthLoggedInState){
                             setState(() {

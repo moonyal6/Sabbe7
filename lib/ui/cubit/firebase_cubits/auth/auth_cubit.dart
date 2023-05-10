@@ -44,6 +44,7 @@ class AuthCubit extends Cubit<AuthStates> {
   Future<void> createUser(
       {required String email, required String password, required Map<String, int> counters}) async {
     print('Auth State: Register: Loading');
+    emit(AuthLoadingState());
     //register
     _auth.registerUser(
         email: email,

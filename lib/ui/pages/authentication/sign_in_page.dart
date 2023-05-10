@@ -6,7 +6,7 @@ import 'package:language_builder/language_builder.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sabbeh_clone/ui/pages/authentication/sign_up_page.dart';
 
-import '../../components/app_page/app_page_components/dialogs/error_dialog.dart';
+import '../../components/app_page/app_page_components/dialogs/page_dialog.dart';
 import '../../components/app_page/app_page_components/text_fields.dart';
 import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../../cubit/firebase_cubits/auth/auth_states.dart';
@@ -97,7 +97,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             setState(() {
                               showSpinner = false;
                             });
-                            showErrorDialog(context);
+                            PageDialog.showErrorDialog(context);
                           }
                           else if (state is AuthLoggedInState){
                             setState(() {
