@@ -1,8 +1,10 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 import 'package:sabbeh_clone/shared/helpers/notice_helper.dart';
+import 'package:sabbeh_clone/data/controllers/counters_controller.dart';
 import 'package:sabbeh_clone/data/controllers/counters_controller.dart';
 
 import '../../data/controllers/notification_controller.dart';
@@ -87,7 +89,6 @@ class _DebugScreenState extends State<DebugScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Debug'),
-
       ),
       body: ListView(
         children:  [
@@ -165,12 +166,13 @@ class _DebugScreenState extends State<DebugScreen> {
 
               _debugTile(
                 text: 'delete account',
+                enabled: false,
                 onTap: () async{
                   final auth = AuthCubit.get(context);
                   final state = auth.state;
                   if(state is AuthLoggedInState){
                     final uid = state.uId;
-                    auth.deleteUser(uid: uid);
+                    // auth.deleteUser(uid: uid);
                   }
                   else{
                     print('NO USER FOUND!');
@@ -187,7 +189,7 @@ class _DebugScreenState extends State<DebugScreen> {
       ////Counter Control Section
       ExpansionTile(
         initiallyExpanded: false,
-        title: const Text('counter',
+        title: const Text('counters',
           style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -195,15 +197,16 @@ class _DebugScreenState extends State<DebugScreen> {
           ),
         ),
         children: [
-          _debugTile(
-            text: 'rest global counter',
-            enabled: false,
-            onTap: (){
-            //   context.read<FirestoreCubit>().resetGlobalCounter();
-              },
-          ),
+          // _debugTile(
+          //   text: 'rest global counter',
+          //   enabled: false,
+          //   onTap: (){
+          //   //   context.read<FirestoreCubit>().resetGlobalCounter();
+          //     },
+          // ),
           _debugTile(
             text: 'rest counter',
+            enabled: false,
             onTap: (){},
             trailing: DropdownButton(
               hint: Text('counter'),
@@ -252,125 +255,135 @@ class _DebugScreenState extends State<DebugScreen> {
               );
             },
           ),
+          _debugTile(
+            text: 'wipe counter date',
+            onTap: () async{
+              await CountersController.get(context, listen: false).resetCounterData(context);
+              _showSnackBar(context,
+                text: 'Counter data deleted',
+                listen: false,
+              );
+            },
+          ),
         ],
       ),
-      ExpansionTile(
-        initiallyExpanded: true,
-        title: const Text('notifications',
-          style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white
-          ),
-        ),
-        children: [
-          _debugTile(
-            text: 'send notification',
-            onTap: (){
-             // NoticeHelper.createTestNotification();
-              NotificationController.createNewNotification();
-            }),
-          _debugTile(
-            enabled: true,
-            text: 'repeating notification every',
-            onTap: (){
-              showDialog<String>(
-                context: context,
-                builder: (BuildContext context) => StatefulBuilder(
-                    builder: (context, setState) {
-                      return AlertDialog(
-                        content: Container(
-                          child: Column(
-                            children: [
-                              // ListTile(
-                              //   title: Text('counter name'),
-                              //   trailing: DropdownButton(
-                              //     value: noticeCountKey,
-                              //     items: CountersProvider.get(context, listen: false).countersMap.keys
-                              //         .map<DropdownMenuItem<String>>((String value) {
-                              //       return DropdownMenuItem<String>(
-                              //         value: value,
-                              //         child: Text(value),
-                              //       );
-                              //     }).toList(),
-                              //     onChanged: (value){
-                              //       setState(() {
-                              //         noticeCountKey = value!;
-                              //       });
-                              //       String counterName = CountersProvider.get(context, listen: false)
-                              //           .countersMap[value]['name'];
-                              //       CacheHelper.saveData(key: 'notice_counter_key', value: counterName);
-                              //     },
-                              //   ),
-                              // ),
-                              ListTile(
-                                title: Text('count num'),
-                                trailing: DropdownButton(
-                                  value: noticeCountNum,
-                                  items: [3, 5, 10]
-                                      .map<DropdownMenuItem<int>>((int value) {
-                                    return DropdownMenuItem<int>(
-                                      value: value,
-                                      child: Text(value.toString()),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value){
-                                    setState(() {
-                                      noticeCountNum = value!;
-                                    });
-                                    CacheHelper.saveData(key: "notice_count", value: value);
-                                  },
-                                ),
+          ExpansionTile(
+            initiallyExpanded: true,
+            title: const Text('notifications',
+              style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
+              ),
+            ),
+            children: [
+              _debugTile(
+                  text: 'send notification',
+                  onTap: (){
+                    // NoticeHelper.createTestNotification();
+                    NotificationController.createNewNotification();
+                  }),
+              _debugTile(
+                enabled: true,
+                text: 'repeating notification every',
+                onTap: (){
+                  showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => StatefulBuilder(
+                        builder: (context, setState) {
+                          return AlertDialog(
+                            content: Container(
+                              child: Column(
+                                children: [
+                                  // ListTile(
+                                  //   title: Text('counter name'),
+                                  //   trailing: DropdownButton(
+                                  //     value: noticeCountKey,
+                                  //     items: CountersProvider.get(context, listen: false).countersMap.keys
+                                  //         .map<DropdownMenuItem<String>>((String value) {
+                                  //       return DropdownMenuItem<String>(
+                                  //         value: value,
+                                  //         child: Text(value),
+                                  //       );
+                                  //     }).toList(),
+                                  //     onChanged: (value){
+                                  //       setState(() {
+                                  //         noticeCountKey = value!;
+                                  //       });
+                                  //       String counterName = CountersProvider.get(context, listen: false)
+                                  //           .countersMap[value]['name'];
+                                  //       CacheHelper.saveData(key: 'notice_counter_key', value: counterName);
+                                  //     },
+                                  //   ),
+                                  // ),
+                                  ListTile(
+                                    title: Text('count num'),
+                                    trailing: DropdownButton(
+                                      value: noticeCountNum,
+                                      items: [3, 5, 10]
+                                          .map<DropdownMenuItem<int>>((int value) {
+                                        return DropdownMenuItem<int>(
+                                          value: value,
+                                          child: Text(value.toString()),
+                                        );
+                                      }).toList(),
+                                      onChanged: (value){
+                                        setState(() {
+                                          noticeCountNum = value!;
+                                        });
+                                        CacheHelper.saveData(key: "notice_count", value: value);
+                                      },
+                                    ),
+                                  ),
+                                  ListTile(
+                                    title: Text('notification delay'),
+                                    trailing: DropdownButton(
+                                      value: noticeInterval,
+                                      items: [
+                                        DropdownMenuItem(child: Text('15 min'), value: 900),
+                                        DropdownMenuItem(child: Text('30 min'), value: 1800),
+                                        DropdownMenuItem(child: Text('1 h'), value: 3600),
+                                        DropdownMenuItem(child: Text('3 h'), value: 10800),
+                                      ],
+                                      onChanged: (value){
+                                        // setState(() {
+                                        noticeInterval = value!;
+                                        // });
+                                        NotificationController.changeInterval(noticeInterval);
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
-                              ListTile(
-                                title: Text('notification delay'),
-                                trailing: DropdownButton(
-                                  value: noticeInterval,
-                                  items: [
-                                    DropdownMenuItem(child: Text('15 min'), value: 900),
-                                    DropdownMenuItem(child: Text('30 min'), value: 1800),
-                                    DropdownMenuItem(child: Text('1 h'), value: 3600),
-                                    DropdownMenuItem(child: Text('3 h'), value: 10800),
-                                  ],
-                                  onChanged: (value){
-                                    // setState(() {
-                                      noticeInterval = value!;
-                                    // });
-                                    NotificationController.changeInterval(noticeInterval);
-                                  },
-                                ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('OK'),
                               ),
                             ],
-                          ),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text('OK'),
-                          ),
-                        ],
-                      );
-                    }
+                          );
+                        }
+                    ),
+                  );
+                  // NotificationController.scheduleNewNotification();
+                },
+                trailing: ElevatedButton(
+                  child:Text('Send'),
+                  onPressed: (){
+                    NotificationController.scheduleNewNotification();
+                  },
                 ),
-              );
-              // NotificationController.scheduleNewNotification();
-            },
-            trailing: ElevatedButton(
-              child:Text('Send'),
-              onPressed: (){
-                NotificationController.scheduleNewNotification();
-              },
-            ),
+              ),
+              _debugTile(
+                text: 'stop all notification',
+                onTap: () {
+                  NotificationController.cancelNotifications();
+                },
+              ),
+              // _debugTile(text: 'isTimeOut = ${CacheHelper.getBool(key: 'timeout')}')
+            ],
           ),
-          _debugTile(
-            text: 'stop all notification',
-            onTap: () {
-              NotificationController.cancelNotifications();
-            },
-          ),
-          // _debugTile(text: 'isTimeOut = ${CacheHelper.getBool(key: 'timeout')}')
-        ],
-      ),
       //
       //     ////Prints Section.
       //     ExpansionTile(

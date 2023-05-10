@@ -10,7 +10,6 @@ const kCounterName = TextStyle(
 const kDrawerTiles = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w300,
-  color: Colors.white
 );
 
 const kReport = TextStyle(

@@ -314,7 +314,7 @@ class NotificationController {
       delayInSeconds: delayInSeconds,
       repeat: false,
       btns: [btn1, btn2],
-      
+
     );
 
     print('created notification every $delayInSeconds seconds with count of $count at: ${

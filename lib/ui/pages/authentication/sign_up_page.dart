@@ -5,7 +5,7 @@ import 'package:language_builder/language_builder.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sabbeh_clone/shared/constants/constants.dart';
 import 'package:sabbeh_clone/ui/pages/authentication/sign_in_page.dart';
-import '../../components/app_page/app_page_components/dialogs/error_dialog.dart';
+import '../../components/app_page/app_page_components/dialogs/page_dialog.dart';
 import '../../components/app_page/app_page_components/text_fields.dart';
 import '../../../data/controllers/counters_controller.dart';
 import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
@@ -109,7 +109,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             setState(() {
                               showSpinner = false;
                             });
-                            showErrorDialog(context);
+                            PageDialog.showErrorDialog(context);
                           }
                           else if (state is AuthLoggedInState){
                             setState(() {

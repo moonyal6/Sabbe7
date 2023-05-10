@@ -6,6 +6,9 @@ import 'package:sabbeh_clone/shared/helpers/notice_helper.dart';
 import '../../data/controllers/counters_controller.dart';
 import '../../data/controllers/notification_controller.dart';
 import '../../shared/helpers/cache_helper.dart';
+import 'package:sabbeh_clone/ui/components/app_page/app_page_components/dialogs/page_dialog.dart';
+
+import '../../data/controllers/counters_controller.dart';
 import '../components/app_page/app_page.dart';
 import '../components/app_page/app_page_components/card/page_card.dart';
 import '../components/app_page/app_page_components/settings_tile.dart';
@@ -30,6 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
     bool sound = SettingsController.get(context).sound;
     bool notifications = SettingsController.get(context).notifications;
     // int noticeInterval = SettingsController.get(context).noticeInterval;
+    String newCounterName = '';
 
     return AppPage(
       title: _pageText['title'],
@@ -70,7 +74,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: _pageText['@tiles']['language'],
                 icon: Icons.language,
                 trailing: DropdownButton<String>(
-                  // value: appLang['@lang_data']['lang_name'],
                   value: LanguageBuilder.getCurrentLang(),
                   onChanged: (value) {
                     LanguageBuilder.changeLanguage(value!, context);
@@ -79,11 +82,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         .updateCountersNames();
                   },
                   items:
-                  // [
-                  // ar['@lang_data']['lang_name'],
-                  // en['@lang_data']['lang_name'],
-                  // tr['@lang_data']['lang_name'],
-                  // ]
                   LanguageBuilder.getAvailableLanguages()
                       .map<DropdownMenuItem<String>>((value) {
                     return DropdownMenuItem<String>(
@@ -93,6 +91,40 @@ class _SettingsPageState extends State<SettingsPage> {
                   }).toList(),
                 ),
               ),
+              SettingsTile(
+                title: 'Add New Counter/',
+                icon: Icons.add_box_outlined,
+                onTap: (){
+                  PageDialog.showPageDialog(
+                    context,
+                    title: 'Add Counter',
+                    content: TextField(
+                      autofocus: true,
+                      onChanged: (value) => newCounterName = value,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Counter Name',
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text('Cancel',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      TextButton(
+                        child: Text('Add'),
+                        onPressed: () {
+                            CountersController.get(context, listen: false)
+                                .addNewCounter(newCounterName);
+                            Navigator.pop(context);
+                          },
+                      ),
+                    ]
+                  );
+                },
+              )
             ],
           ),
           PageCard(

@@ -12,16 +12,18 @@ class CounterPage extends StatelessWidget {
 
   final String counterKey;
 
+
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = LanguageBuilder.texts!['@counters'];
+    final bool isDefaultCounter = CountersController.get(context, listen: false)
+        .countersMap[counterKey]['default'];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Container(
         child: SabbehButton(() {
           CountersController.get(context, listen: false)
-              .increment(context, counterKey: counterKey);
+              .increment(context, counterKey: counterKey, isDefault: isDefaultCounter);
         },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -34,10 +36,13 @@ class CounterPage extends StatelessWidget {
                   SizedBox(height: 100),
                   Column(
                     children: [
-                      Text(ar['@reports']['@local_report']['@counters'][counterKey],
+                      Text( isDefaultCounter
+                          ? ar['@reports']['@local_report']['@counters'][counterKey]
+                          : CountersController.get(context).countersMap[counterKey]['name'],
                         style: kCounterName,
                       ),
-                      Text(LanguageBuilder.getCurrentLang() == 'العربية' ? ''
+                      Text(LanguageBuilder.getCurrentLang() == 'العربية'
+                          || !isDefaultCounter ? ''
                           :CountersController.get(context).countersMap[counterKey]['name'],
                         style: TextStyle(
                             fontWeight: FontWeight.w600,

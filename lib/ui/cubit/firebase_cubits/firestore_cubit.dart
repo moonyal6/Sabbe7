@@ -1,7 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sabbeh_clone/data/api/firestore_api.dart';
+import 'package:sabbeh_clone/data/controllers/counters_controller.dart';
 import 'package:sabbeh_clone/shared/constants/constants.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 
@@ -27,7 +27,7 @@ class FirestoreCubit extends Cubit<int>{
 
   static FirestoreCubit get(context) => BlocProvider.of(context);
 
-  String _userCounterCollection(uid) => 'counters/$uid';
+  String _userCounterRef(uid) => 'counters/$uid';
 
   final _firestoreApi = FirestoreApi();
 
@@ -36,7 +36,8 @@ class FirestoreCubit extends Cubit<int>{
 
   /* Global Counter Methods */
 
-   void addCountGlobal(Map<String, int> counters) {
+   void addCountGlobal(Map<String, int> counters)
+   {
      // firestoreIncrement(ref: _globalRef, field: 'global_count');
 
       _firestoreApi.getDoc(docRef: _globalRef).then((value) async{
@@ -60,11 +61,11 @@ class FirestoreCubit extends Cubit<int>{
           print("can't add to global : $e");
         }
       });
-
-
   }
 
-   void resetGlobalCounter() async{
+
+   void resetGlobalCounter() async
+   {
      // firestoreResetCounter(ref: globalRef, field: "global_count");
      _firestoreApi.updateDoc(
          docRef: _globalRef,
@@ -73,41 +74,74 @@ class FirestoreCubit extends Cubit<int>{
          });
    }
 
-   Stream globalCounterStream(){
+
+   Stream globalCounterStream()
+   {
       return _firestoreApi.docStream(docRef: _globalRef);
    }
 
 
-
    /* User Counter Methods */
 
-  getUserCounters({required String uid}){
-    return _firestoreApi.getDoc(docRef: _userCounterCollection(uid));
+  getUserCounters({required String uid})
+  {
+    return _firestoreApi.getDoc(docRef: _userCounterRef(uid));
   }
 
-  void addUserCount({required String uid, required String counterKey, required int count}){
-    _firestoreApi.getDoc(docRef: _userCounterCollection(uid)).then((value) {
+
+  void addUserCount(BuildContext context,
+      {required String uid, required String counterKey, required bool isDefault})
+  {
+
+    _firestoreApi.getDoc(docRef: _userCounterRef(uid)).then((value) {
       final result = value.data() as Map<String, dynamic>;
-      try{
-        _firestoreApi.updateDoc(
-            docRef: _userCounterCollection(uid),
-            fields: {counterKey: result[counterKey] + count});
-      }
-      catch(e){
-        print('field not found');
-        _firestoreApi.updateDoc(
-            docRef: _userCounterCollection(uid),
-            fields: {counterKey: CacheHelper.getInteger(key: counterKey)});
-      }
+
+      Map<String, dynamic> fieldsValue(fieldValue) {
+        if(isDefault) return {counterKey: fieldValue};
+        else {
+          result['additional'][counterKey] = fieldValue;
+          return {
+            'additional': result['additional']
+          };
+        }
+      };
+
+      // try {
+      //   print('##### fieldsValue ${fieldsValue(result[counterKey] + 1)}');
+      //   _firestoreApi.updateDoc(
+      //       docRef: _userCounterRef(uid),
+      //       fields: fieldsValue(result[counterKey] + 1)
+      //   );
+      // }
+      // on FirebaseException catch (e){
+      //   print("FirebaseException: '${e.code}': ${e.message}");
+      // }
+      // catch (e) {
+      //   print('field not found');
+      //   print('error: $e');
+        try{
+          _firestoreApi.updateDoc(
+              docRef: _userCounterRef(uid),
+              fields: fieldsValue(
+                  CountersController.get(context, listen: false)
+                      .countersMap[counterKey]['count']
+              )
+          );
+        }
+        catch(e){
+          print("can't update add doc \n Error: $e");
+        }
+      // }
     });
   }
 
-  void updateUserCounterDocs({required String? uid}){
+  void updateUserCounterDocs({required String? uid})
+  {
     print('Checking User Counter Docs');
     print('up uid: $uid');
     if(uid != null){
       print('updating');
-      _firestoreApi.getDoc(docRef: _userCounterCollection(uid)).then((value) {
+      _firestoreApi.getDoc(docRef: _userCounterRef(uid)).then((value) {
         final result = value.data() as Map<String, dynamic>;
         docContains(key) => result.containsKey(key);
         if (!docContains(cnt4_key) &&
@@ -116,7 +150,7 @@ class FirestoreCubit extends Cubit<int>{
           int counter4 = CacheHelper.getInteger(key: cnt4_key);
           int counter5 = CacheHelper.getInteger(key: cnt5_key);
           int counter6 = CacheHelper.getInteger(key: cnt6_key);
-          _firestoreApi.updateDoc(docRef: _userCounterCollection(uid), fields: {
+          _firestoreApi.updateDoc(docRef: _userCounterRef(uid), fields: {
             'counter_4': counter4,
             'counter_5': counter5,
             'counter_6': counter6,
@@ -127,9 +161,11 @@ class FirestoreCubit extends Cubit<int>{
     }else{print('not updated');}
   }
 
-   void createUserCounters({required String uid}) async{
+
+   void createUserCounters({required String uid}) async
+   {
      _firestoreApi.setDoc(
-         docRef: _userCounterCollection(uid),
+         docRef: _userCounterRef(uid),
          //todo get local counters as map to set them to firestore
          fields: {
            'counter_1': 0,
@@ -141,7 +177,9 @@ class FirestoreCubit extends Cubit<int>{
          });
    }
 
-   void resetUserCount(BuildContext context, String counterField) {
+
+   void resetUserCount(BuildContext context, String counterField)
+   {
      // firestoreResetCounter(ref: ref, field: counterField);
      String uid = 'uid';
      _firestoreApi.updateDoc(
@@ -153,7 +191,9 @@ class FirestoreCubit extends Cubit<int>{
          });
    }
 
-   void deleteUserCounters(String? email){
+
+   void deleteUserCounters(String? email)
+   {
      // _db.doc('counters/$email').delete();
      String uid = 'uid';
      _firestoreApi.deleteDoc(docRef: uid);

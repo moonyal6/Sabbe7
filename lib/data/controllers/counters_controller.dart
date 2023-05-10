@@ -12,6 +12,26 @@ import '../../ui/cubit/firebase_cubits/auth/auth_states.dart';
 import '../../ui/cubit/firebase_cubits/firestore_cubit.dart';
 
 
+final _defaultCounterData = {
+  cnt1_key: {
+    'name' : LanguageBuilder.texts!['@reports']['@local_report']['@counters'][cnt1_key],
+    'count': 0,
+    'default': true
+  },
+  cnt2_key: {
+    'name' : LanguageBuilder.texts!['@reports']['@local_report']['@counters'][cnt2_key],
+    'count': 0,
+    'default': true
+  },
+  cnt3_key: {
+    'name' : LanguageBuilder.texts!['@reports']['@local_report']['@counters'][cnt3_key],
+    'count': 0,
+    'default': true
+  },
+};
+
+
+
 class CountersController extends ChangeNotifier{
 
   static CountersController get(context, {bool listen = true}) =>
@@ -20,20 +40,7 @@ class CountersController extends ChangeNotifier{
   //todo: secure [_countersData] by methods
   Map<String, dynamic> _countersData = CacheHelper.getString(key: 'counters') != ''
       ? jsonDecode(CacheHelper.getString(key: 'counters'))
-      : {
-          cnt1_key: {
-            'name' : LanguageBuilder.texts!['@reports']['@local_report']['@counters'][cnt1_key],
-            'count': 0
-          },
-          cnt2_key: {
-            'name' : LanguageBuilder.texts!['@reports']['@local_report']['@counters'][cnt2_key],
-            'count': 0
-          },
-          cnt3_key: {
-            'name' : LanguageBuilder.texts!['@reports']['@local_report']['@counters'][cnt3_key],
-            'count': 0
-          },
-        };
+      : _defaultCounterData;
 
   get cnt1 => _countersData[cnt1_key];
   get cnt2 => _countersData[cnt2_key];
@@ -41,21 +48,23 @@ class CountersController extends ChangeNotifier{
 
   Map<String, dynamic> get countersMap => _countersData;
 
+  Future<bool> _updateCache() async => await CacheHelper
+      .saveData(key: 'counters', value: jsonEncode(_countersData));
 
   Future<void> increment(BuildContext context, {
-    required String counterKey, int count = 1, bool notify = true}) async
+    required String counterKey, required bool isDefault, int count = 1}) async
   {
     final firestore = FirestoreCubit.get(context);
     final authState = AuthCubit.get(context).state;
 
+    _countersData[counterKey]!['count']  = _countersData[counterKey]!['count'] + count;
+    notifyListeners();
+    final count = _countersData[counterKey]!['count'];
+    print(count);
 
-    _countersData[counterKey]!['count'] = _countersData[counterKey]!['count'] + count;
-    notify? notifyListeners(): print('not notifying listeners');
-    final newCount = _countersData[counterKey]!['count'];
-    print(newCount);
-
-    counterMethods(context, newCount);
-    await CacheHelper.saveData(key: 'counters', value: jsonEncode(_countersData));
+    counterMethods(context, count);
+    _updateCache();
+    print('length ${countersMap.length}');
 
     if(authState is AuthLoggedInState) {
       String uid = authState.uId;
@@ -64,36 +73,26 @@ class CountersController extends ChangeNotifier{
           uid: uid,
           counterKey: counterKey,
           count: count
+          isDefault: isDefault
       );
+      if(isDefault) {
+        // firestore.addCountGlobal({counterKey: count});
+      }
     }
-  }
-
-
-  Future<void> backgroundIncrement(BuildContext context) async
-  {
-    print('background adding');
-    int backgroundCount = await CacheHelper.getInteger(key: 'background_adding');
-    for(var key in _countersData.keys) {
-      await increment(context,
-        counterKey: key,
-        count: backgroundCount,
-        notify: true,
-      );
-    }
-    // notifyListeners();
-    // CacheHelper.removeData(key: 'background_adding');
   }
 
 
   void addNewCounter(counterName){
     final int mapLength = _countersData.length;
-    if(mapLength < 5){
+    if(mapLength < 8){
       _countersData['counter_${mapLength+1}'] = {
         'name' : counterName,
         'count': 0,
+        'default': false
       };
       print('added');
       print('length ${countersMap.length}');
+      _updateCache();
       notifyListeners();
     }else{
       print('limit is 5 counters');
@@ -106,11 +105,20 @@ class CountersController extends ChangeNotifier{
       _countersData.remove(counterName);
       print('removed');
       print('length ${countersMap.length}');
+      _updateCache();
       notifyListeners();
     }
     else{
       print('at least 3 counters');
     }
+  }
+
+  Future<void> resetCounterData(BuildContext context) async{
+
+    await AuthCubit.get(context).signOut();
+    _countersData = _defaultCounterData;
+    _updateCache();
+    notifyListeners();
   }
 
   Future<void> updateCountersNames() async{
@@ -121,7 +129,7 @@ class CountersController extends ChangeNotifier{
         .texts!['@reports']['@local_report']['@counters'][cnt2_key];
     _countersData[cnt3_key]['name'] = LanguageBuilder
         .texts!['@reports']['@local_report']['@counters'][cnt3_key];
-    await CacheHelper.saveData(key: 'counters', value: jsonEncode(_countersData));
+    _updateCache();
   }
 
 }

@@ -1,8 +1,7 @@
-import 'package:background_fetch/background_fetch.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:language_builder/language_builder.dart';
-import 'package:sabbeh_clone/shared/helpers/background_helper.dart';
-import 'package:sabbeh_clone/shared/helpers/notice_helper.dart';
+import 'data/controllers/notification_controller.dart';
 import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -22,12 +21,10 @@ import 'package:sabbeh_clone/ui/pages/home_page.dart';
 import 'package:sabbeh_clone/ui/pages/debug_screen.dart';
 import 'package:sabbeh_clone/ui/pages/reports/global_report_screen.dart';
 import 'package:sabbeh_clone/ui/pages/reports/personal_report.dart';
-
-
 import 'package:sabbeh_clone/ui/pages/settings_page.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 
 void main() async {
@@ -35,7 +32,7 @@ void main() async {
 
   await CacheHelper.init();
 
-  // await NoticeHelper.initNotification();
+  // await NotificationController.initNotification();
   await NotificationController.initializeLocalNotifications();
   await NotificationController.initializeIsolateReceivePort();
 
@@ -44,14 +41,10 @@ void main() async {
   );
 
   runApp(SabbehApp());
-  // BackgroundFetch.registerHeadlessTask(BackgroundHelper.backgroundFetchHeadlessTask);
 }
 
 class SabbehApp extends StatelessWidget {
   SabbehApp({Key? key}) : super(key: key);
-
-  static final GlobalKey<NavigatorState> navigatorKey =
-  GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +91,7 @@ class SabbehApp extends StatelessWidget {
               GlobalReportScreen.route : (context) => GlobalReportScreen(),
               UserManagementScreen.route : (context) => UserManagementScreen(),
             },
-            initialRoute: InitClass.route,
+            initialRoute: HomePage.route,
             builder: (context, child) {
               return ScrollConfiguration(behavior: AppScrollBehavior(), child: child!);
             },
@@ -109,7 +102,7 @@ class SabbehApp extends StatelessWidget {
   }
 }
 
-  
+
 class InitClass extends StatefulWidget {
   const InitClass({Key? key}) : super(key: key);
   static String route = 'init';
@@ -118,7 +111,7 @@ class InitClass extends StatefulWidget {
 }
 
 class _InitClassState extends State<InitClass> {
-  
+
   @override
   void initState() {
     super.initState();
@@ -153,9 +146,3 @@ class AppScrollBehavior extends ScrollBehavior{
     return child;
   }
 }
-
-
-
-
-
-

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:language_builder/language_builder.dart';
+import 'package:sabbeh_clone/ui/components/app_page/app_page_components/dialogs/page_dialog.dart';
 import '../../components/app_page/app_page.dart';
 import '../../components/app_page/app_page_components/card/card_components/card_tile.dart';
 import '../../components/app_page/app_page_components/card/page_button_card.dart';
 import '../../components/app_page/app_page_components/card/page_card.dart';
-import '../../components/app_page/app_page_components/header/page_header.dart';
 import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../../cubit/firebase_cubits/auth/auth_states.dart';
 
@@ -24,36 +24,48 @@ class UserManagementScreen extends StatefulWidget {
 }
 
 class _UserManagementScreenState extends State<UserManagementScreen> {
-
+  Map<String, dynamic> _pageText = LanguageBuilder.texts!['@account_management_page'];
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
 
   String? _password;
   String? _email;
 
-  _showDialog(BuildContext context, {
-    required String title,
-    required Widget content,
-    required List<Widget> actions,
-  }){
-    return showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        backgroundColor: Color(0xff1c1a1a),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18)
-        ),
-
-        title:  Text(title),
-        content: content,
-        actions: actions,
-      ),
-    );
+  _showSignInDialog(BuildContext context){
+     PageDialog.showPageDialog(
+       context,
+       title: _pageText['@sign_out_dialog']['title'],
+       contentText: _pageText['@sign_out_dialog']['content'],
+       actions: [
+         TextButton(
+           child: Text(
+             _pageText['@sign_out_dialog']['@buttons']['cancel'],
+           ),
+           onPressed: () => Navigator.pop(context),
+         ),
+         BlocListener<AuthCubit, AuthStates>(
+           child: TextButton(
+             child: Text(
+               _pageText['@sign_out_dialog']['@buttons']['sign_out'],
+               style: _whiteColor,
+             ),
+             onPressed: () {
+               AuthCubit.get(context).signOut();
+               Navigator.pop(context);
+             },
+           ),
+           listener: (context, state) {
+             if(state is AuthLoggedOutState){
+               Navigator.pop(context);
+             }
+           },
+         ),
+       ],
+     );
   }
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> _pageText = LanguageBuilder.texts!['@account_management_page'];
 
     String mail = AuthCubit.get(context)
         .currentUser!.email;
@@ -111,35 +123,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                   text: _pageText['sign_out'],
                   textColor: Colors.red,
                   onPressed: (){
-                    _showDialog(context,
-                      title: _pageText['@sign_out_dialog']['title'],
-                      content: Text(_pageText['@sign_out_dialog']['content']),
-                      actions: [
-                        TextButton(
-                          child: Text(
-                            _pageText['@sign_out_dialog']['@buttons']['cancel'],
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        BlocListener<AuthCubit, AuthStates>(
-                          child: TextButton(
-                            child: Text(
-                              _pageText['@sign_out_dialog']['@buttons']['sign_out'],
-                              style: _whiteColor,
-                            ),
-                            onPressed: () {
-                              AuthCubit.get(context).signOut();
-                              Navigator.pop(context);
-                            },
-                          ),
-                          listener: (context, state) {
-                            if(state is AuthLoggedOutState){
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                      ],
-                    );
+                    _showSignInDialog(context);
                   },
                 ),
               ),
