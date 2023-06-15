@@ -1,4 +1,3 @@
-import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
@@ -19,7 +18,7 @@ class NoticeHelper {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: -1, // -1 is replaced by a random number
-            channelKey: 'alerts',
+            channelKey: 'basic_channel',
             title: 'Test',
             body:
             "Some Body",
@@ -75,6 +74,7 @@ class NoticeHelper {
         //actionType : ActionType.DismissAction,
         color: Colors.black,
         backgroundColor: Colors.black,
+        customSound: 'resource://raw/pop2',
         // customSound: 'resource://raw/notif',
         // payload: {'actPag': 'myAct', 'actType': 'food', 'username': username},
       ),

@@ -129,7 +129,8 @@ class CounterPageDrawer extends StatelessWidget {
     return SizedBox(
       width: 230,
       child: Drawer(
-        backgroundColor: Colors.black87,
+        backgroundColor: Color(0xFF080707),
+        elevation: 10,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -137,7 +138,7 @@ class CounterPageDrawer extends StatelessWidget {
               height: 160,
               child: DrawerHeader(                              ////DrawerHeader
                   // padding: EdgeInsets.only(top: 15),
-                  child: Image.asset('assets/images/sabbeh_tr.png',
+                  child: Image.asset('assets/images/sabbeh_splash_logo.png',
                     alignment: Alignment.centerLeft,
                   ),
               ),

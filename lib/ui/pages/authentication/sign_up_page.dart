@@ -84,9 +84,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             onPressed: () async{
                               Map<String, int> counters = //CountersProvider.get(context).countersMap;
                               {
-                                cnt1_key: CountersController.get(context).cnt1,
-                                cnt2_key: CountersController.get(context).cnt2,
-                                cnt3_key: CountersController.get(context).cnt3,
+                                cnt1_key: CountersController.get(context).countersMap[cnt1_key],
+                                cnt2_key: CountersController.get(context).countersMap[cnt2_key],
+                                cnt3_key: CountersController.get(context).countersMap[cnt3_key],
                               };
 
                               AuthCubit.get(context)

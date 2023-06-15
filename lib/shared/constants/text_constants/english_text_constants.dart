@@ -54,9 +54,10 @@ const Map<String, dynamic> en =
       'vibration': 'Vibration',
       'sound': 'Sound',
       'language': 'Language',
+      'add_counter': 'Add New Counter',
       'enable_notifications': 'Send Notifications',
-      'count_number': 'Count per notification',
-      'notification_delay': 'Notification Timing',
+      'count_number': 'Count of Dhikr per Session',
+      'notification_delay': 'Reminder Timing',
     },
     '@drop_downs': {
       'minute': 'min',

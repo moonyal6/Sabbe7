@@ -53,9 +53,10 @@ const Map<String, dynamic> ar = {
       'vibration': "الإهتزاز",//
       'sound': 'الصوت',
       'language': "اللغة",
+      'add_counter': 'إضاقة ذكر جديد',
       'enable_notifications': 'إرسال الإشعارات',
-      'count_number': 'العدد لكل إشعار',
-      'notification_delay': 'توقيت الإشعارات',
+      'count_number': 'عدد الاذكار في الجلسة',
+      'notification_delay': 'توقيت التذكير',
     },
     '@drop_downs': {
       'minute': 'د',

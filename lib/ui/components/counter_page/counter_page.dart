@@ -13,8 +13,14 @@ class CounterPage extends StatelessWidget {
   final String counterKey;
 
 
+
+  int count = 0;
   @override
   Widget build(BuildContext context) {
+    int? controllerCount = CountersController.get(context)
+        .sessionCounters[counterKey];
+    print('Counter Page build called');
+
     final bool isDefaultCounter = CountersController.get(context, listen: false)
         .countersMap[counterKey]['default'];
 
@@ -22,8 +28,15 @@ class CounterPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: Container(
         child: SabbehButton(() {
-          CountersController.get(context, listen: false)
-              .increment(context, counterKey: counterKey, isDefault: isDefaultCounter);
+          print('count before: ${count}');
+          count = count + 1;
+          print('count after: ${count}');
+          CountersController.get(context, listen: false).incrementSessionMap(
+              counterKey);
+            CountersController.get(context, listen: false).increment(context,
+                counterKey: counterKey, isDefault: isDefaultCounter);
+            print('controllerCount: ${controllerCount}');
+
         },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -53,8 +66,7 @@ class CounterPage extends StatelessWidget {
                       SizedBox(height: 20),
                     ],
                   ),
-                  Text(CountersController.get(context)
-                      .countersMap[counterKey]['count'].toString(),
+                  Text('${controllerCount ?? 0}',
                     style: const TextStyle(
                       fontSize: 50,
                       color: Colors.white,
@@ -73,5 +85,4 @@ class CounterPage extends StatelessWidget {
       ),
     );
   }
-//TODO: add an animation function.
 }

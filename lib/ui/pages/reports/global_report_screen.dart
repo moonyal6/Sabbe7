@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +40,7 @@ class _GlobalReportScreenState extends State<GlobalReportScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Text("Loading");}
                 var data = snapshot.data;
+                print('data: ${data['total_counts']}');
                 return Column(
                   children: [
                     Text('${data['total_counts']}',
@@ -65,18 +68,18 @@ class _GlobalReportScreenState extends State<GlobalReportScreen> {
                           counterText: _pageText['@counters'][cnt3_key],
                           countText: data[cnt3_key].toString(),
                         ),
-                        CardReportTile(
-                          counterText: _pageText['@counters'][cnt4_key],
-                          countText: data[cnt4_key].toString(),
-                        ),
-                        CardReportTile(
-                          counterText: _pageText['@counters'][cnt5_key],
-                          countText: data[cnt5_key].toString(),
-                        ),
-                        CardReportTile(
-                          counterText: _pageText['@counters'][cnt6_key],
-                          countText: data[cnt6_key].toString(),
-                        ),
+                        // CardReportTile(
+                        //   counterText: _pageText['@counters'][cnt4_key],
+                        //   countText: data[cnt4_key].toString(),
+                        // ),
+                        // CardReportTile(
+                        //   counterText: _pageText['@counters'][cnt5_key],
+                        //   countText: data[cnt5_key].toString(),
+                        // ),
+                        // CardReportTile(
+                        //   counterText: _pageText['@counters'][cnt6_key],
+                        //   countText: data[cnt6_key].toString(),
+                        // ),
                       ],
                     ),
                   ],

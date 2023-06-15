@@ -206,24 +206,24 @@ class _DebugScreenState extends State<DebugScreen> {
           // ),
           _debugTile(
             text: 'rest counter',
-            enabled: false,
-            onTap: (){},
-            trailing: DropdownButton(
-              hint: Text('counter'),
-              items: [cnt1_key,
-                      cnt2_key,
-                      cnt3_key,
-                      cnt4_key,
-                      cnt5_key,
-                      cnt6_key,
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (value){},
-            ),
+            // enabled: false,
+            onTap: (){CountersController.get(context, listen: false).dailyReset(isDebug: true);},
+            // trailing: DropdownButton(
+            //   hint: Text('counter'),
+            //   items: [cnt1_key,
+            //           cnt2_key,
+            //           cnt3_key,
+            //           cnt4_key,
+            //           cnt5_key,
+            //           cnt6_key,
+            //   ].map<DropdownMenuItem<String>>((String value) {
+            //     return DropdownMenuItem<String>(
+            //       value: value,
+            //       child: Text(value),
+            //     );
+            //   }).toList(),
+            //   onChanged: (value){},
+            // ),
           ),
           _debugTile(
             text: 'add counter',
@@ -241,7 +241,7 @@ class _DebugScreenState extends State<DebugScreen> {
                       );
                     }).toList(),
                     onChanged: (value){
-                      CountersController.get(context, listen: false).addNewCounter(value);
+                      CountersController.get(context, listen: false).addNewCounter(value!);
                     },
                   ),
               );
@@ -371,7 +371,7 @@ class _DebugScreenState extends State<DebugScreen> {
                 trailing: ElevatedButton(
                   child:Text('Send'),
                   onPressed: (){
-                    NotificationController.scheduleNewNotification();
+                    NotificationController.scheduleNewNotification(debug: true);
                   },
                 ),
               ),

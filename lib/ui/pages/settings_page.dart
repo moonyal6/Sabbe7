@@ -37,165 +37,170 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return AppPage(
       title: _pageText['title'],
-      child: Column(
+      child: ListView(
         children: [
-          PageCard(
-            title: _pageText['@titles']['general'],
+          Column(
             children: [
-              SettingsTile(
-                title: _pageText['@tiles']['vibration'],
-                icon: Icons.vibration,
-                trailing: Switch(
-                  value: vibration,
-                  activeColor: Colors.blue,
-                  activeTrackColor: Colors.white,
-                  onChanged: (bool value){
-                    // setState(() {
-                      SettingsController.get(context, listen: false).toggle(Settings.Vibration);
-                    // });
-                  },
-                ),
-              ),
-              SettingsTile(
-                title: _pageText['@tiles']['sound'],
-                icon: Icons.volume_up_outlined,
-                trailing: Switch(
-                  value: sound,
-                  activeColor: Colors.blue,
-                  activeTrackColor: Colors.white,
-                  onChanged: (bool value){
-                    // setState(() {
-                      SettingsController.get(context, listen: false).toggle(Settings.Sound);
-                    // });
-                  },
-                ),
-              ),
-              SettingsTile(
-                title: _pageText['@tiles']['language'],
-                icon: Icons.language,
-                trailing: DropdownButton<String>(
-                  value: LanguageBuilder.getCurrentLang(),
-                  onChanged: (value) {
-                    LanguageBuilder.changeLanguage(value!, context);
-                    CacheHelper.saveData(key: 'lang', value: value);
-                    CountersController.get(context, listen: false)
-                        .updateCountersNames();
-                  },
-                  items:
-                  LanguageBuilder.getAvailableLanguages()
-                      .map<DropdownMenuItem<String>>((value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
-              SettingsTile(
-                title: 'Add New Counter/',
-                icon: Icons.add_box_outlined,
-                onTap: (){
-                  PageDialog.showPageDialog(
-                    context,
-                    title: 'Add Counter',
-                    content: TextField(
-                      autofocus: true,
-                      onChanged: (value) => newCounterName = value,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Counter Name',
-                      ),
+              PageCard(
+                title: _pageText['@titles']['general'],
+                children: [
+                  SettingsTile(
+                    title: _pageText['@tiles']['vibration'],
+                    icon: Icons.vibration,
+                    trailing: Switch(
+                      value: vibration,
+                      activeColor: Colors.blue,
+                      activeTrackColor: Colors.white,
+                      onChanged: (bool value){
+                        // setState(() {
+                          SettingsController.get(context, listen: false).toggle(Settings.Vibration);
+                        // });
+                      },
                     ),
-                    actions: [
-                      TextButton(
-                        child: Text('Cancel',
-                          style: TextStyle(color: Colors.white),
+                  ),
+                  SettingsTile(
+                    title: _pageText['@tiles']['sound'],
+                    icon: Icons.volume_up_outlined,
+                    trailing: Switch(
+                      value: sound,
+                      activeColor: Colors.blue,
+                      activeTrackColor: Colors.white,
+                      onChanged: (bool value){
+                        // setState(() {
+                          SettingsController.get(context, listen: false).toggle(Settings.Sound);
+                        // });
+                      },
+                    ),
+                  ),
+                  SettingsTile(
+                    title: _pageText['@tiles']['language'],
+                    icon: Icons.language,
+                    trailing: DropdownButton<String>(
+                      value: LanguageBuilder.getCurrentLang(),
+                      onChanged: (value) async{
+                        await CacheHelper.saveData(key: 'lang', value: value);
+                         LanguageBuilder.changeLanguage(value!, context);
+
+                        // CountersController.get(context, listen: false)
+                        //     .updateCountersNames();
+                      },
+                      items:
+                      LanguageBuilder.getAvailableLanguages()
+                          .map<DropdownMenuItem<String>>((value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  SettingsTile(
+                    title: _pageText['@tiles']['add_counter'],
+                    icon: Icons.add_box_outlined,
+                    onTap: (){
+                      PageDialog.showPageDialog(
+                        context,
+                        title: 'Add Counter',
+                        content: TextField(
+                          autofocus: true,
+                          onChanged: (value) => newCounterName = value,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Counter Name',
+                          ),
                         ),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      TextButton(
-                        child: Text('Add'),
-                        onPressed: () {
-                            CountersController.get(context, listen: false)
-                                .addNewCounter(newCounterName);
-                            Navigator.pop(context);
-                          },
-                      ),
-                    ]
-                  );
-                },
-              )
-            ],
-          ),
-          PageCard(
-            title: _pageText['@titles']['notifications'],
-            children: [
-              SettingsTile(
-                title: _pageText['@tiles']['enable_notifications'],
-                icon: Icons.notifications_none_outlined,
-                trailing: Switch(
-                  value: notifications,
-                  activeColor: Colors.blue,
-                  activeTrackColor: Colors.white,
-                  onChanged: (value){
-                    SettingsController.get(context, listen: false)
-                        .toggle(Settings.Notification);
-                  },
-                ),
+                        actions: [
+                          TextButton(
+                            child: Text('Cancel',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          TextButton(
+                            child: Text('Add'),
+                            onPressed: () {
+                                CountersController.get(context, listen: false)
+                                    .addNewCounter(newCounterName);
+                                Navigator.pop(context);
+                              },
+                          ),
+                        ]
+                      );
+                    },
+                  )
+                ],
               ),
-              SettingsTile(
-                title: _pageText['@tiles']['count_number'],
-                icon: Icons.pin_outlined,
-                trailing: DropdownButton(
-                  value: CacheHelper.getInteger(key: "notice_count") != 0
-                      ? CacheHelper.getInteger(key: "notice_count") : 5,
-                  items: [
-                    DropdownMenuItem(child: Text('3'), value: 3),
-                    DropdownMenuItem(child: Text('5'), value: 5),
-                    DropdownMenuItem(child: Text('10'), value: 10),
-                  ],
-                  onChanged: (value){
-                    setState(() {
-                      CacheHelper.saveData(key: "notice_count", value: value);
-                    });
-                  },
-                ),
-              ),
-              SettingsTile(
-                title: _pageText['@tiles']['notification_delay'],
-                icon: Icons.timer_outlined,
-                trailing: DropdownButton(
-                  value: CacheHelper.getInteger(key: "notice_delay") != 0
-                      ? CacheHelper.getInteger(key: "notice_delay") : 1800,
-                  items: [
-                    DropdownMenuItem(
-                        child: Text(
-                            '15 ${_pageText['@drop_downs']['minute']}'),
-                        value: 900,
+              PageCard(
+                title: _pageText['@titles']['notifications'],
+                children: [
+                  SettingsTile(
+                    title: _pageText['@tiles']['enable_notifications'],
+                    icon: Icons.notifications_none_outlined,
+                    trailing: Switch(
+                      value: notifications,
+                      activeColor: Colors.blue,
+                      activeTrackColor: Colors.white,
+                      onChanged: (value){
+                        SettingsController.get(context, listen: false)
+                            .toggle(Settings.Notification);
+                      },
                     ),
-                    DropdownMenuItem(
-                        child: Text(
-                            '30 ${_pageText['@drop_downs']['minute']}'),
-                        value: 1800,
+                  ),
+                  SettingsTile(
+                    title: _pageText['@tiles']['count_number'],
+                    icon: Icons.pin_outlined,
+                    trailing: DropdownButton(
+                      value: CacheHelper.getInteger(key: "notice_count") != 0
+                          ? CacheHelper.getInteger(key: "notice_count") : 5,
+                      items: [
+                        DropdownMenuItem(child: Text('3'), value: 3),
+                        DropdownMenuItem(child: Text('5'), value: 5),
+                        DropdownMenuItem(child: Text('10'), value: 10),
+                      ],
+                      onChanged: (value){
+                        setState(() {
+                          CacheHelper.saveData(key: "notice_count", value: value);
+                        });
+                      },
                     ),
-                    DropdownMenuItem(
-                        child: Text(
-                            '1 ${_pageText['@drop_downs']['hour']}'),
-                        value: 3600,
+                  ),
+                  SettingsTile(
+                    title: _pageText['@tiles']['notification_delay'],
+                    icon: Icons.timer_outlined,
+                    trailing: DropdownButton(
+                      value: CacheHelper.getInteger(key: "notice_delay") != 0
+                          ? CacheHelper.getInteger(key: "notice_delay") : 1800,
+                      items: [
+                        DropdownMenuItem(
+                            child: Text(
+                                '15 ${_pageText['@drop_downs']['minute']}'),
+                            value: 900,
+                        ),
+                        DropdownMenuItem(
+                            child: Text(
+                                '30 ${_pageText['@drop_downs']['minute']}'),
+                            value: 1800,
+                        ),
+                        DropdownMenuItem(
+                            child: Text(
+                                '1 ${_pageText['@drop_downs']['hour']}'),
+                            value: 3600,
+                        ),
+                        DropdownMenuItem(
+                            child: Text(
+                                '3 ${_pageText['@drop_downs']['hour']}'),
+                            value: 10800,
+                        ),
+                      ],
+                      onChanged: (value){
+                        setState(() {
+                          // noticeInterval = value!;
+                          CacheHelper.saveData(key: 'notice_delay', value: value);
+                        });
+                      },
                     ),
-                    DropdownMenuItem(
-                        child: Text(
-                            '3 ${_pageText['@drop_downs']['hour']}'),
-                        value: 10800,
-                    ),
-                  ],
-                  onChanged: (value){
-                    setState(() {
-                      // noticeInterval = value!;
-                      CacheHelper.saveData(key: 'notice_delay', value: value);
-                    });
-                  },
-                ),
+                  ),
+                ],
               ),
             ],
           ),

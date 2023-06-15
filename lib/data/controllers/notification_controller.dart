@@ -28,7 +28,8 @@ class NotificationController {
   ///
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications().initialize(
-        null, //'resource://drawable/res_app_icon',//
+        null,
+        //'resource://drawable/res_app_icon',
         [
           NotificationChannel(
               channelKey: 'basic_channel',
@@ -36,6 +37,8 @@ class NotificationController {
               channelDescription: 'Notification tests as alerts',
               playSound: true,
               onlyAlertOnce: true,
+              defaultRingtoneType: DefaultRingtoneType.Notification,
+              soundSource: 'resource://raw/pop2',
               groupAlertBehavior: GroupAlertBehavior.Children,
               importance: NotificationImportance.High,
               defaultPrivacy: NotificationPrivacy.Private,
@@ -219,7 +222,7 @@ class NotificationController {
     NoticeHelper.createNotification();
   }
 
-  static Future<void> scheduleNewNotification() async {
+  static Future<void> scheduleNewNotification({bool debug = false}) async {
     bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
     if (!isAllowed) isAllowed = await displayNotificationRationale();
     if (!isAllowed) return;
@@ -245,25 +248,25 @@ class NotificationController {
     String per;
 
     String enTitle = "It's time for tasbeeh!";
-    String enMsg = "Your reminder: ";
+    String enMsg = "Your reminder, ";
     String enBtn1 = 'Add';
     String enBtn2 = 'Dismiss';
     String enAnd = 'and';
-    String enPer = 'times each.';
+    String enPer = 'times each:';
 
     String arTitle = "حان وقت التسبيح!";
-    String arMsg = "تذكيرك: ";
+    String arMsg = "تذكيرك, ";
     String arBtn1 = 'إضافة';
     String arBtn2 = 'تجاهل';
     String arAnd = 'و';
-    String arPer = 'مرات لكل ذكر.';
+    String arPer = 'مرات لكل ذكر:';
 
     String trTitle = "Tesbih vakti geldi!";
-    String trMsg = "Hatırlatmanız: ";
+    String trMsg = "Hatırlatmanız, ";
     String trBtn1 = 'Ekle';
     String trBtn2 = 'İptal';
     String trAnd = 've';
-    String trPer = 'kez her biri.';
+    String trPer = 'kez her biri:';
 
     String lang = CacheHelper.getString(key: 'lang');
 
@@ -294,24 +297,25 @@ class NotificationController {
     }
 
     int currentLength = 0;
+    noticeMsg = noticeMsg + '$count $per';
     for(var counter in countersMap.values){
       currentLength++;
       if(currentLength + 1 == countersMap.length) {
         noticeMsg = noticeMsg + ' ${counter['name']} $and';
       }
       else if(currentLength + 1 > countersMap.length){
-        noticeMsg = noticeMsg + ' ${counter['name']} ';
+        noticeMsg = noticeMsg + ' ${counter['name'].toString().trim()}.';
       }else{
         noticeMsg = noticeMsg + ' ${counter['name']},';
       }
     }
-    noticeMsg = noticeMsg + '$count $per';
+
 
     await NoticeHelper.myNotifyScheduleInHours(
       title: title,
       msg:
       noticeMsg,
-      delayInSeconds: delayInSeconds,
+      delayInSeconds: !debug? delayInSeconds: 10,
       repeat: false,
       btns: [btn1, btn2],
 

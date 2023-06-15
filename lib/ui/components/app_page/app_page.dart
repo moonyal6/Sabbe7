@@ -12,7 +12,8 @@ class AppPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Color(0xFF0E0C0C),
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),

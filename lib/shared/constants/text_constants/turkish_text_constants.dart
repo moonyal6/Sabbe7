@@ -53,9 +53,10 @@ const Map<String, dynamic> tr = {
       'vibration': 'Titreşim',
       'sound': 'Ses',
       'language': 'Dil',
+      'add_counter': 'Yeni Sayıcı Ekle',
       'enable_notifications': 'Bildirim Gönder',
-      'count_number': 'Bildirim başına sayım',
-      'notification_delay': 'Bildirim Zamanlaması',
+      'count_number': 'Oturumdaki Zikir Sayısı',
+      'notification_delay': 'Hatırlatıcı Zamanlaması',
     },
     '@drop_downs': {
       'minute': 'dk',

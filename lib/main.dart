@@ -43,9 +43,15 @@ void main() async {
   runApp(SabbehApp());
 }
 
-class SabbehApp extends StatelessWidget {
+class SabbehApp extends StatefulWidget {
   SabbehApp({Key? key}) : super(key: key);
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+  @override
+  State<SabbehApp> createState() => _SabbehAppState();
+}
+
+class _SabbehAppState extends State<SabbehApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -91,7 +97,7 @@ class SabbehApp extends StatelessWidget {
               GlobalReportScreen.route : (context) => GlobalReportScreen(),
               UserManagementScreen.route : (context) => UserManagementScreen(),
             },
-            initialRoute: HomePage.route,
+            initialRoute: InitClass.route,
             builder: (context, child) {
               return ScrollConfiguration(behavior: AppScrollBehavior(), child: child!);
             },
@@ -120,6 +126,7 @@ class _InitClassState extends State<InitClass> {
 
   asyncInit() async{
     await CountersController.get(context, listen: false).backgroundIncrement(context);
+    await CountersController.get(context, listen: false).dailyReset();
 
 
     await NotificationController.cancelNotifications();
