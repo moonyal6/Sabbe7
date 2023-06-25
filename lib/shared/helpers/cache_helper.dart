@@ -1,5 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+void _printReading(String key, dynamic value, bool dPrint) =>
+    dPrint? print('Cache Helper reading from $key: $value'): null;
+
+void _printWriting(String key, dynamic value, bool dPrint) =>
+    dPrint? print('Cache Helper writing to $key: $value'): null;
+
 class CacheHelper
 {
   static late SharedPreferences sharedPreferences;

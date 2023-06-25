@@ -1,361 +1,127 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:isolate';
-import 'dart:ui';
-
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:sabbeh_clone/main.dart';
-import 'package:sabbeh_clone/shared/constants/constants.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:language_builder/language_builder.dart';
+import 'package:provider/provider.dart';
+import 'package:sabbeh_clone/data/controllers/settings_controller.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 import 'package:sabbeh_clone/shared/helpers/notice_helper.dart';
-import 'package:sabbeh_clone/data/controllers/counters_controller.dart';
 
-///  *********************************************
-///     NOTIFICATION CONTROLLER
-///  *********************************************
-///
+import '../../shared/constants/cache_constants.dart';
+import 'counters_controller.dart';
 
-const int delayInSeconds = 10;
 
-class NotificationController {
-  static ReceivedAction? initialAction;
+enum NotificationInterval {
+  every15minutes,
+  every30minutes,
+  every1hour,
+  every3hours
+}
 
-  ///  *********************************************
-  ///     INITIALIZATIONS
-  ///  *********************************************
-  ///
-  static Future<void> initializeLocalNotifications() async {
-    await AwesomeNotifications().initialize(
-        null,
-        //'resource://drawable/res_app_icon',
-        [
-          NotificationChannel(
-              channelKey: 'basic_channel',
-              channelName: 'Basic Channel',
-              channelDescription: 'Notification tests as alerts',
-              playSound: true,
-              onlyAlertOnce: true,
-              defaultRingtoneType: DefaultRingtoneType.Notification,
-              soundSource: 'resource://raw/pop2',
-              groupAlertBehavior: GroupAlertBehavior.Children,
-              importance: NotificationImportance.High,
-              defaultPrivacy: NotificationPrivacy.Private,
-              defaultColor: Colors.deepPurple,
-              ledColor: Colors.deepPurple)
-        ],
-        debug: true);
+Map<NotificationInterval, RepeatInterval> map = {
+  NotificationInterval.every15minutes: RepeatInterval.everyMinute,
+  NotificationInterval.every30minutes: RepeatInterval.hourly,
+  NotificationInterval.every1hour: RepeatInterval.daily,
+  NotificationInterval.every3hours: RepeatInterval.weekly,
+};
 
-    // Get initial notification action is optional
-    initialAction = await AwesomeNotifications()
-        .getInitialNotificationAction(removeFromActionEvents: false);
-  }
+Map<int, RepeatInterval> intToRepeatInterval = {
+  15: RepeatInterval.everyMinute,
+  30: RepeatInterval.hourly,
+  60: RepeatInterval.daily,
+  180: RepeatInterval.weekly,
+};
 
-  static ReceivePort? receivePort;
-  static Future<void> initializeIsolateReceivePort() async {
-    receivePort = ReceivePort('Notification action port in main isolate')
-      // ..listen(
-      //         (silentData) => onActionReceivedImplementationMethod(silentData))
-            ;
+//Convert [NotificationController] to a provider to control notifications easily.
 
-    // This initialization only happens on main isolate
-    IsolateNameServer.registerPortWithName(
-        receivePort!.sendPort, 'notification_action_port');
-  }
+class NotificationController extends ChangeNotifier{
 
-  ///  *********************************************
-  ///     NOTIFICATION EVENTS LISTENER
-  ///  *********************************************
-  ///  Notifications events are only delivered after call this method
-  static Future<void> startListeningNotificationEvents() async {
-    AwesomeNotifications()
-        .setListeners(
-        onActionReceivedMethod: onActionReceivedMethod,
-        onNotificationDisplayedMethod: onNotificationDisplayedMethod
+  static NotificationController get(context, {bool listen = true}) =>
+      Provider.of<NotificationController>(context, listen: listen);
+
+
+  // Initialize values
+
+  void setNotificationReminder(BuildContext context) async
+  {
+    Map language = LanguageBuilder.texts!['@notification'];
+    int countPer = await CacheHelper.getInteger(key: CacheKeys.noticeCount);
+    countPer != 0 ? null
+        : {countPer = 5, CacheHelper.saveData(key: CacheKeys.noticeCount, value: 5)};
+
+    String content = "${language['content']}, $countPer ${language['per_count']}: ";
+    Iterable<String> countersNames =
+        CountersController.get(context, listen: false).countersMap.keys;
+
+    int len = countersNames.length;
+    countersNames.toList().asMap().forEach((index, counter) {
+      content = content + counter;
+      if(index == len) content = '$content.';
+      else if(index + 1 == len) content = '$content ${language['and']} ';
+      else content = '$content, ';
+    });
+
+    NotificationHelper.showReminderNotification(
+      title: language['title'],
+      body: content,
+      actionBtn1: language['@buttons']['add'],
+      actionBtn2: language['@buttons']['dismiss'],
+      interval: _getRepeatInterval(await _getNotificationInterval()),
     );
+    print('Reminder Notification have been set');
   }
 
-  ///  *********************************************
-  ///     NOTIFICATION EVENTS
-  ///  *********************************************
-  ///
-  @pragma('vm:entry-point')
-  static Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction) async {
-    if(receivedAction.buttonKeyPressed == "ADD"){
-      await CacheHelper.init();
-      print('adding from notification/////////////');
-      int savedCount = await CacheHelper.getInteger(key: 'background_adding');
-      int addingCount = await CacheHelper.getInteger(key: 'notice_count');
-      CacheHelper.saveData(key: 'background_adding', value: savedCount + addingCount);
+  Future<void> updateValues(BuildContext context,
+      {int? countPer, int? interval})
+  async {
+    countPer != null ? await CacheHelper.
+    saveData(key: CacheKeys.noticeCount, value: countPer): null;
+    interval != null ? await CacheHelper
+        .saveData(key: CacheKeys.noticeInterval, value: interval): null;
+    SettingsController.get(context, listen: false).notifications
+        ? setNotificationReminder(context): null;
+  }
+
+
+  Future<NotificationInterval> _getNotificationInterval() async{
+    int cacheValue = await CacheHelper.getInteger(key: CacheKeys.noticeInterval);
+    switch(cacheValue){
+      case 15:
+        return NotificationInterval.every15minutes;
+      case 30:
+        return NotificationInterval.every30minutes;
+      case 60:
+        return NotificationInterval.every1hour;
+      case 180:
+        return NotificationInterval.every3hours;
     }
-    // if (receivedAction.actionType == ActionType.SilentAction ||
-    //     receivedAction.actionType == ActionType.SilentBackgroundAction) {
-    //   // For background actions, you must hold the execution until the end
-    //   print(
-    //       'Message sent via notification input: "${receivedAction.buttonKeyInput}"');
-    //   await executeLongTaskInBackground();
-    // } else {
-    //   // this process is only necessary when you need to redirect the user
-    //   // to a new page or use a valid context, since parallel isolates do not
-    //   // have valid context, so you need redirect the execution to main isolate
-    //   if (receivePort == null) {
-    //     print(
-    //         'onActionReceivedMethod was called inside a parallel dart isolate.');
-    //     SendPort? sendPort =
-    //     IsolateNameServer.lookupPortByName('notification_action_port');
-    //
-    //     if (sendPort != null) {
-    //       print('Redirecting the execution to main isolate process.');
-    //       sendPort.send(receivedAction);
-    //       return;
-    //     }
-    //   }
-    //
-    //   // return onActionReceivedImplementationMethod(receivedAction);
-    // }
+    await CacheHelper.saveData(key: CacheKeys.noticeInterval, value: 30);
+    return await _getNotificationInterval();
   }
 
-  static Future<void> onActionReceivedImplementationMethod(
-      ReceivedAction receivedAction) async {
-    SabbehApp.navigatorKey.currentState?.pushNamedAndRemoveUntil(
-        '/notification-page',
-            (route) =>
-        (route.settings.name != '/notification-page') || route.isFirst,
-        arguments: receivedAction);
-  }
-
-
-  /// Use this method to detect every time that a new notification is displayed
-  @pragma("vm:entry-point")
-  static Future <void> onNotificationDisplayedMethod(ReceivedNotification receivedNotification) async {
-    /// Reschedule new notification when a notification is displayed
-    scheduleNewNotification();
-  }
-
-  ///  *********************************************
-  ///     REQUESTING NOTIFICATION PERMISSIONS
-  ///  *********************************************
-  ///
-  static Future<bool> displayNotificationRationale() async {
-    bool userAuthorized = false;
-    BuildContext context = SabbehApp.navigatorKey.currentContext!;
-    await showDialog(
-        context: context,
-        builder: (BuildContext ctx) {
-          //todo change alert ui
-          return AlertDialog(
-            title: Text('Get Notified!',
-                style: Theme.of(context).textTheme.titleLarge),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Image.asset(
-                        'assets/animated-bell.gif',
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                    'Allow Awesome Notifications to send you beautiful notifications!'),
-              ],
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Text(
-                    'Deny',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(color: Colors.red),
-                  )),
-              TextButton(
-                  onPressed: () async {
-                    userAuthorized = true;
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Text(
-                    'Allow',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleLarge
-                        ?.copyWith(color: Colors.deepPurple),
-                  )),
-            ],
-          );
-        });
-    return userAuthorized &&
-        await AwesomeNotifications().requestPermissionToSendNotifications();
-  }
-
-  ///  *********************************************
-  ///     BACKGROUND TASKS TEST
-  ///  *********************************************
-  static Future<void> executeLongTaskInBackground() async {
-    print("starting long task");
-    await Future.delayed(const Duration(seconds: 4));
-    final url = Uri.parse("http://google.com");
-    final re = await http.get(url);
-    print(re.body);
-    print("long task done");
-  }
-
-  ///  *********************************************
-  ///     NOTIFICATION CREATION METHODS
-  ///  *********************************************
-  ///
-  static Future<void> createNewNotification() async {
-    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    if (!isAllowed) isAllowed = await displayNotificationRationale();
-    if (!isAllowed) return;
-
-    NoticeHelper.createNotification();
-  }
-
-  static Future<void> scheduleNewNotification({bool debug = false}) async {
-    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    if (!isAllowed) isAllowed = await displayNotificationRationale();
-    if (!isAllowed) return;
-
-    Map countersMap = jsonDecode(CacheHelper.getString(key: 'counters'));
-
-    int cacheDelay = await CacheHelper.getInteger(key: 'notice_delay');
-    int cacheCount = await CacheHelper.getInteger(key: "notice_count");
-
-    int delayInSeconds = cacheDelay != 0 ? cacheDelay : 1800;
-    int count = cacheCount != 0 ? cacheCount : 5;
-
-    print('notice counters data: $countersMap');
-    /// set values to default if no value was assigned2
-    delayInSeconds = delayInSeconds == 0 ? 900 : delayInSeconds;
-    count = count == 0 ? 10 : count;
-
-    String noticeMsg;
-    String btn1;
-    String btn2;
-    String title;
-    String and;
-    String per;
-
-    String enTitle = "It's time for tasbeeh!";
-    String enMsg = "Your reminder, ";
-    String enBtn1 = 'Add';
-    String enBtn2 = 'Dismiss';
-    String enAnd = 'and';
-    String enPer = 'times each:';
-
-    String arTitle = "حان وقت التسبيح!";
-    String arMsg = "تذكيرك, ";
-    String arBtn1 = 'إضافة';
-    String arBtn2 = 'تجاهل';
-    String arAnd = 'و';
-    String arPer = 'مرات لكل ذكر:';
-
-    String trTitle = "Tesbih vakti geldi!";
-    String trMsg = "Hatırlatmanız, ";
-    String trBtn1 = 'Ekle';
-    String trBtn2 = 'İptal';
-    String trAnd = 've';
-    String trPer = 'kez her biri:';
-
-    String lang = CacheHelper.getString(key: 'lang');
-
-    switch(lang){
-      case 'العربية':
-        noticeMsg = arMsg;
-        btn1 = arBtn1;
-        btn2 = arBtn2;
-        title = arTitle;
-        and = arAnd;
-        per = arPer;
-        break;
-      case 'Türkçe':
-        noticeMsg = trMsg;
-        btn1 = trBtn1;
-        btn2 = trBtn2;
-        title = trTitle;
-        and = trAnd;
-        per = trPer;
-        break;
-      default:
-        noticeMsg = enMsg;
-        btn1 = enBtn1;
-        btn2 = enBtn2;
-        title = enTitle;
-        and = enAnd;
-        per = enPer;
+  RepeatInterval _getRepeatInterval(NotificationInterval interval){
+    switch(interval){
+      case NotificationInterval.every15minutes:
+        return RepeatInterval.everyMinute;
+      case NotificationInterval.every30minutes:
+        return RepeatInterval.hourly;
+      case NotificationInterval.every1hour:
+        return RepeatInterval.daily;
+      case NotificationInterval.every3hours:
+        return RepeatInterval.weekly;
     }
-
-    int currentLength = 0;
-    noticeMsg = noticeMsg + '$count $per';
-    for(var counter in countersMap.values){
-      currentLength++;
-      if(currentLength + 1 == countersMap.length) {
-        noticeMsg = noticeMsg + ' ${counter['name']} $and';
-      }
-      else if(currentLength + 1 > countersMap.length){
-        noticeMsg = noticeMsg + ' ${counter['name'].toString().trim()}.';
-      }else{
-        noticeMsg = noticeMsg + ' ${counter['name']},';
-      }
-    }
-
-
-    await NoticeHelper.myNotifyScheduleInHours(
-      title: title,
-      msg:
-      noticeMsg,
-      delayInSeconds: !debug? delayInSeconds: 10,
-      repeat: false,
-      btns: [btn1, btn2],
-
-    );
-
-    print('created notification every $delayInSeconds seconds with count of $count at: ${
-        DateTime.now().hour}:${DateTime.now().minute}');
   }
 
-  static Future<void> resetBadgeCounter() async
-  {
-    await AwesomeNotifications().resetGlobalBadge();
-  }
-
-  static Future<void> cancelNotifications() async
-  {
-    await AwesomeNotifications().cancelAll();
-  }
-
-
-
-  static void changeInterval(int interval) async
-  {
-    // int intervalInt;
-    // switch(interval){
-    //   case NoticeInterval.every15min:
-    //     intervalInt = 900;
-    //     break;
-    //   case NoticeInterval.every30min:
-    //     intervalInt = 1800;
-    //     break;
-    //   case NoticeInterval.every1hour:
-    //     intervalInt = 3600;
-    //     break;
-    //   case NoticeInterval.every3hours:
-    //     intervalInt = 10800;
-    //     break;
-    // }
-
-    await CacheHelper.saveData(key: 'notice_delay', value: interval);
-  }
+  // int _getIntervalInt(NotificationInterval interval){
+  //   switch(interval){
+  //     case NotificationInterval.every15minutes:
+  //       return 15;
+  //     case NotificationInterval.every30minutes:
+  //       return 30;
+  //     case NotificationInterval.every1hour:
+  //       return 60;
+  //     case NotificationInterval.every3hours:
+  //       return 180;
+  //   }
+  // }
 
 }

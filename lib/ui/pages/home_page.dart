@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
     SystemChannels.textInput.invokeMethod('TextInput.hide');
     AuthCubit.get(context).getUserData(uId: AuthCubit.get(context).currentUser?.id);
 
-    NotificationController.startListeningNotificationEvents();
+    // NotificationController.startListeningNotificationEvents();
     // rescheduleNotifications();
 
 
@@ -44,8 +44,8 @@ class _HomePageState extends State<HomePage> {
 
   void rescheduleNotifications()async{
     final bool isEnabled = SettingsController.get(context).notifications;
-    await NotificationController.cancelNotifications();
-    isEnabled ? NotificationController.scheduleNewNotification() : null;
+    // await NotificationController.cancelNotifications();
+    // isEnabled ? NotificationController.scheduleNewNotification() : null;
   }
 
 
@@ -145,3 +145,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+

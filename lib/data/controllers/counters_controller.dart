@@ -5,6 +5,7 @@ import 'package:language_builder/language_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 
+import '../../shared/constants/cache_constants.dart';
 import '../../shared/constants/constants.dart';
 import '../../shared/helpers/counter_methods.dart';
 import '../../ui/cubit/firebase_cubits/auth/auth_cubit.dart';
@@ -38,8 +39,9 @@ class CountersController extends ChangeNotifier{
       Provider.of<CountersController>(context, listen: listen);
 
   //todo: make _countersData an object  
-  Map<String, dynamic> _countersData = CacheHelper.getString(key: 'counters') != ''
-      ? jsonDecode(CacheHelper.getString(key: 'counters'))
+  Map<String, dynamic> _countersData = CacheHelper.getString(
+      key: CacheKeys.startupTime) != ''
+      ? jsonDecode(CacheHelper.getString(key: CacheKeys.counters))
       : _defaultCounterData;
 
   Map sessionCounters = {};
@@ -60,7 +62,7 @@ class CountersController extends ChangeNotifier{
 
   void _updateCache() async {
     // notifyListeners();
-    CacheHelper.saveData(key: 'counters', value: jsonEncode(_countersData));
+    CacheHelper.saveData(key: CacheKeys.counters, value: jsonEncode(_countersData));
   }
 
 
@@ -110,7 +112,8 @@ class CountersController extends ChangeNotifier{
   Future<void> backgroundIncrement(BuildContext context) async
   {
     print('background adding');
-    int backgroundCount = await CacheHelper.getInteger(key: 'background_adding');
+    int backgroundCount = await CacheHelper.getInteger(
+        key: CacheKeys.backgroundAdding);
     for(var key in _countersData.keys) {
       await increment(context,
         counterKey: key,
@@ -126,8 +129,8 @@ class CountersController extends ChangeNotifier{
 
   Future<void> dailyReset({bool isDebug = false}) async
   {
-    final cacheStartTime = await CacheHelper.getString(key: 'startup_time');
-    print('startup_time.isEmpty: ${cacheStartTime.isEmpty}');
+    final cacheStartTime = await CacheHelper.getString(
+        key: CacheKeys.startupTime);
 
     final previousStartupTime = cacheStartTime.isNotEmpty
         ? DateTime.parse(cacheStartTime) : DateTime.now();
@@ -136,16 +139,17 @@ class CountersController extends ChangeNotifier{
         previousStartupTime.month,
         previousStartupTime.day + 1); // returns exactly the next midnight
 
-    final next5mins = previousStartupTime.add(Duration(minutes: 1));
+    final next5mins = previousStartupTime.add(Duration(minutes: 5));
 
-    if (_now.isAfter(next5mins) || isDebug) {
+    if (_now.isAfter(nextMidnight) || isDebug) {
       print('daily resting counters');
       for(var key in _countersData.keys) {
         _countersData[key]['count'] = 0;
       }
       _updateCache();
     }
-     await CacheHelper.saveData(key: 'startup_time', value: _now.toString(), dPrint: true);
+     await CacheHelper.saveData(key: CacheKeys.startupTime,
+         value: _now.toString(), dPrint: true);
     notifyListeners();
   }
 

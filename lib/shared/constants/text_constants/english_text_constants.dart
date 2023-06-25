@@ -93,8 +93,10 @@ const Map<String, dynamic> en =
     },
   },
   '@notification': {
-    'title': "It's time for tasbeeh!",
-    'content': "Your reminder:",
+    'title': "It's time for Tasbih!",
+    'content': "Your reminder",
+    'per_count': "times each",
+    'and': "and",
     '@buttons': {
       'add': "Add",
       'dismiss': "Dismiss",

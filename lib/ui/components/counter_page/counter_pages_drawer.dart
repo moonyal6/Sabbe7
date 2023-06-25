@@ -11,7 +11,7 @@ import '../../cubit/firebase_cubits/auth/auth_cubit.dart';
 import '../../cubit/firebase_cubits/auth/auth_states.dart';
 import '../../pages/authentication/sign_in_page.dart';
 import '../../pages/authentication/user_management_page.dart';
-import '../../pages/debug_screen.dart';
+import '../../pages/debug/debug_screen.dart';
 import '../../pages/reports/global_report_screen.dart';
 import '../../pages/reports/personal_report.dart';
 import '../../pages/settings_page.dart';

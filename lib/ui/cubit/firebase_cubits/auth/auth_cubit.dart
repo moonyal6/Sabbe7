@@ -26,6 +26,7 @@ import 'package:sabbeh_clone/shared/helpers/cache_helper.dart';
 import 'package:sabbeh_clone/ui/cubit/firebase_cubits/firestore_cubit.dart';
 
 import '../../../../data/models/user_model.dart';
+import '../../../../shared/constants/cache_constants.dart';
 import 'auth_states.dart';
 
 
@@ -79,7 +80,7 @@ class AuthCubit extends Cubit<AuthStates> {
         FirestoreCubit().addCountGlobal(counters);
         currentUser = user;
         emit(AuthLoggedInState(uid));
-        await CacheHelper.saveData(key: 'uid', value: currentUser!.id);
+        await CacheHelper.saveData(key: CacheKeys.uId, value: currentUser!.id);
       }).catchError((onError){
         _auth.deleteUserDataDocs(uId: uid);
         emit(AuthErrorState(onError.toString()));
@@ -110,7 +111,7 @@ class AuthCubit extends Cubit<AuthStates> {
         emit(AuthErrorState(onError.toString()));
         print('Error Sign In: $onError');
       });
-      await CacheHelper.saveData(key: 'uid', value: uid);
+      await CacheHelper.saveData(key: CacheKeys.uId, value: uid);
     }
     on FirebaseAuthException catch (e){
       print('AuthError: Sign In: ${e.code}');
@@ -175,7 +176,7 @@ class AuthCubit extends Cubit<AuthStates> {
         print('signing out');
         currentUser = null;
         emit(AuthLoggedOutState());
-        await CacheHelper.removeData(key: 'uid');
+        await CacheHelper.removeData(key: CacheKeys.uId);
         print('signed out success');
       }).catchError((onError) {
         emit(AuthErrorState(onError.toString()));
@@ -198,7 +199,7 @@ class AuthCubit extends Cubit<AuthStates> {
         _auth.deleteUser(uId: uid)?.then((value) {
           currentUser = null;
           emit(AuthLoggedOutState());
-          CacheHelper.removeData(key: 'uid');
+          CacheHelper.removeData(key: CacheKeys.uId);
           print('Auth State: Delete Account: Logged Out');
         }).catchError((onError){
           emit(AuthErrorState(onError.toString()));

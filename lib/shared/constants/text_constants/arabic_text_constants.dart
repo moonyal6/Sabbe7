@@ -93,7 +93,9 @@ const Map<String, dynamic> ar = {
   },
   '@notification': {
     'title': "حان وقت التسبيح!",
-    'content': "تذكيرك:",
+    'content': "تذكيرك",
+    'per_count': "لكل ذكر",
+    'and': "و",
     '@buttons': {
       'add': "إضافة",
       'dismiss': "تجاهل",

@@ -93,7 +93,9 @@ const Map<String, dynamic> tr = {
   },
   '@notification': {
     'title': "Tesbih vakti geldi!",
-    'content': "Hatırlatmanız:",
+    'content': "Hatırlatmanız",
+    'per_count': "kez her biri",
+    'and': "ve",
     '@buttons': {
       'add': "Ekle",
       'dismiss': "İptal",
